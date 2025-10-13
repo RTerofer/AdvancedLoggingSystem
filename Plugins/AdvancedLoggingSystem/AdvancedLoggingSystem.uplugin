@@ -1,0 +1,42 @@
+{
+	"FileVersion": 3,
+	"Version": 130,
+	"VersionName": "1.3",
+	"EngineVersion": "5.2.0",
+	"FriendlyName": "Advanced Logging System",
+	"Description": "Enhanced PrintString Node, C++ Debug Macros, Property Inspector, Logs Viewer, Blackboard Logging & Batch Print Manager",
+	"Category": "Debugging",
+	"CreatedBy": "RTerofer",
+	"CreatedByURL": "https://dev.epicgames.com/community/profile/MM961/RTerofer",
+	"DocsURL": "https://rterofer.gitbook.io/advanced-logging-system-plugin-documentation",
+	"FabURL": "com.epicgames.launcher://ue/Fab/product/918b32d7-5c29-49d4-925f-85e53155a175",
+	"SupportURL": "https://forums.unrealengine.com/t/advanced-logging-system-plugin/2513455",
+	"MarketplaceURL": "https://fab.com/s/64efe02d3f99",
+	"IsBetaVersion": false,
+	"IsExperimentalVersion": false,
+	"CanContainContent": true,
+	"Installed": true,
+	"Modules": [
+		{
+			"Name": "ALS",
+			"Type": "Runtime",
+			"LoadingPhase": "Default",
+			"PlatformAllowList": [
+				"Win64",
+				"Mac",
+				"Linux",
+				"Android"
+			]
+		},
+		{
+			"Name": "ALS_Editor",
+			"Type": "UncookedOnly",
+			"LoadingPhase": "PostEngineInit",
+			"PlatformAllowList": [
+				"Win64",
+				"Mac",
+				"Linux"
+			]
+		}
+	]
+}
