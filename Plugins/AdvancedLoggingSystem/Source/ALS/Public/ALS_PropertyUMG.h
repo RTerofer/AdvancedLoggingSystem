@@ -31,8 +31,9 @@ public:
     UExpandableArea* PropertyWindow = nullptr;
 
 protected:
+
     TArray<AActor*> GetAllActorsInWorld();
-    TMultiMap<UObject*, FProperty*> GetAllPropertiesOfObject(UALS_PropWorldObject* PropWorldObject, const FString& FilterProperty, const bool& bIsInherited);
+    TMap<UObject*, TArray<FProperty*>> GetAllPropertiesOfObject(UALS_PropWorldObject* PropWorldObject, const FString& FilterProperty, const bool& bIsInherited);
 
     virtual void NativeConstruct() override;
     

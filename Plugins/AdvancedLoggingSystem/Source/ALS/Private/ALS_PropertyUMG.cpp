@@ -37,7 +37,7 @@ TArray<AActor*> UALS_PropertyUMG::GetAllActorsInWorld()
     TArray<AActor*> GameActors;
     TArray<AActor*> EngineActors;
 
-    for (TActorIterator<AActor> ActorIt(GetWorld()); ActorIt; ++ActorIt)
+    for (TActorIterator<AActor> ActorIt(GetWorld(), AActor::StaticClass(), EActorIteratorFlags::SkipPendingKill | EActorIteratorFlags::AllActors); ActorIt; ++ActorIt)
     {
         UClass* ActorClass = ActorIt->GetClass();
         FString PackageName = ActorClass->GetOutermost()->GetName();
@@ -56,31 +56,33 @@ TArray<AActor*> UALS_PropertyUMG::GetAllActorsInWorld()
     return GameActors;
 }
 
-TMultiMap<UObject*, FProperty*> UALS_PropertyUMG::GetAllPropertiesOfObject(UALS_PropWorldObject* PropWorldObject, const FString& FilterProperty, const bool& bIsInherited)
+TMap<UObject*, TArray<FProperty*>> UALS_PropertyUMG::GetAllPropertiesOfObject(UALS_PropWorldObject* PropWorldObject, const FString& FilterProperty, const bool& bIsInherited)
 {
-    TMultiMap<UObject*, FProperty*> OutProps;
+    TMap<UObject*, TArray<FProperty*>> OutProps;
     if (!PropWorldObject || !PropWorldObject->VarContext) return OutProps;
 
-    auto GatherProps = [&](UObject* Obj)
+    auto GatherProps = [&](UObject* Obj) -> TArray<FProperty*>
         {
-            if (!Obj) return;
-            const auto SuperFlag = (bIsInherited || !FilterProperty.IsEmpty()) ? EFieldIteratorFlags::IncludeSuper : EFieldIteratorFlags::ExcludeSuper;
+            if (!Obj) return {};
 
-            for (TFieldIterator<FProperty> It(Obj->GetClass(), SuperFlag, EFieldIteratorFlags::ExcludeDeprecated); It; ++It)
+            TArray<FProperty*> FoundProperties;
+
+            for (TFieldIterator<FProperty> It(Obj->GetClass(), EFieldIteratorFlags::IncludeSuper, EFieldIteratorFlags::DeprecatedPropertyFlags::ExcludeDeprecated); It; ++It)
             {
                 FProperty* Property = *It;
 
                 if (Property->GetFName() == TEXT("UberGraphFrame")) continue;
-                if (!Property->HasAnyPropertyFlags(CPF_Edit | CPF_BlueprintVisible)) continue;
 
                 if (FilterProperty.IsEmpty() || Property->GetName().Contains(FilterProperty))
                 {
-                    OutProps.Add(Obj, Property);
+                    FoundProperties.Add(Property);
                 }
             }
+
+            return FoundProperties;
         };
 
-    GatherProps(PropWorldObject->VarContext);
+    OutProps.Add(PropWorldObject->VarContext, GatherProps(PropWorldObject->VarContext));
 
     if (bIsInherited || !FilterProperty.IsEmpty())
     {
@@ -90,7 +92,7 @@ TMultiMap<UObject*, FProperty*> UALS_PropertyUMG::GetAllPropertiesOfObject(UALS_
 
             for (UActorComponent* InnerComp : InnerComps)
             {
-                GatherProps(InnerComp);
+                OutProps.Add(InnerComp, GatherProps(InnerComp));
             }
         }
     }
@@ -100,30 +102,17 @@ TMultiMap<UObject*, FProperty*> UALS_PropertyUMG::GetAllPropertiesOfObject(UALS_
 
 void UALS_PropertyUMG::SetWorldObjects(UListView* InObjectList, UListView* InMessageList, const FString& FilterObject, const FString& FilterProperty)
 {
-    TArray<AActor*> FoundActors = GetAllActorsInWorld();
+    TArray<AActor*> FoundActors(GetAllActorsInWorld());
     InObjectList->ClearListItems();
 
     TArray<UALS_PropWorldObject*> WorldObjects;
-    auto AddObject = [&](UALS_PropWorldObject* ObjectToAdd)
-        {
-            ObjectToAdd->MessageList = InMessageList;
-            ObjectToAdd->ObjectList = InObjectList;
-            ObjectToAdd->FilterProperty = FilterProperty;
-
-            WorldObjects.Add(ObjectToAdd);
-        };
 
     for (AActor* Actor : FoundActors)
     {
-        FString ContextString;
-
-        ContextString = Actor->GetName().Replace(TEXT("_C_"), TEXT(" #"));
+        FString ContextString = Actor->GetName().Replace(TEXT("_C_"), TEXT(" #"));
 
         #if WITH_EDITOR
-            if (UALS_Settings::Get()->UseActorLabel)
-            {
-                ContextString = Actor->GetActorLabel();
-            }
+            if (UALS_Settings::Get()->UseActorLabel) ContextString = Actor->GetActorLabel();       
         #endif
 
         if (FilterObject.IsEmpty() || ContextString.Contains(FilterObject))
@@ -131,8 +120,12 @@ void UALS_PropertyUMG::SetWorldObjects(UListView* InObjectList, UListView* InMes
             UALS_PropWorldObject* WorldObject = NewObject<UALS_PropWorldObject>();
             WorldObject->VarContext = Cast<UObject>(Actor);
             WorldObject->ObjectName = ContextString;
+            WorldObject->MessageList = InMessageList;
+            WorldObject->ObjectList = InObjectList;
+            WorldObject->FilterProperty = FilterProperty;
+
             Actor->OnDestroyed.AddDynamic(WorldObject, &UALS_PropWorldObject::HandleActorDestroyed);
-            AddObject(WorldObject);
+            WorldObjects.Add(WorldObject);
         }
     }
 
@@ -143,7 +136,7 @@ void UALS_PropertyUMG::SetWorldObjects(UListView* InObjectList, UListView* InMes
         UALS_PropWorldObject* WorldObject = NewObject<UALS_PropWorldObject>();
         WorldObject->VarContext = GameInstance;
         WorldObject->ObjectName = GameInstance->GetName();
-        AddObject(WorldObject);
+        WorldObjects.Add(WorldObject);
     }
 
     InObjectList->SetListItems(WorldObjects);
@@ -154,37 +147,32 @@ void UALS_PropertyUMG::SetVarObjects(UALS_PropWorldObject* PropWorldObject, ULis
     if (!PropWorldObject) return;
 
     FString FilterProperty = PropWorldObject->FilterProperty;
-    TMultiMap<UObject*, FProperty*> MappedProperties = GetAllPropertiesOfObject(PropWorldObject, FilterProperty, bIsInherited);
+    TMap<UObject*, TArray<FProperty*>> MappedProperties = GetAllPropertiesOfObject(PropWorldObject, FilterProperty, bIsInherited);
 
     InPropertyList->ClearListItems();
 
     TArray<UALS_PropVarObject*> VarObjects;
-    TSet<FString> SubHeads;
 
-    for (auto& Pair : MappedProperties)
+    for (const auto& Pair : MappedProperties)
     {
-        UObject* VarOwner = Pair.Key;
-        FProperty* VarProperty = Pair.Value;
+        UALS_PropVarObject* SubHeadObject = NewObject<UALS_PropVarObject>();
+        SubHeadObject->PropertyName = Pair.Key->GetFName();
+        SubHeadObject->IsSubHead = true;
 
-        if (!SubHeads.Contains(VarOwner->GetName()))
+        VarObjects.Add(SubHeadObject);
+
+        for (FProperty* VarProperty : Pair.Value)
         {
             UALS_PropVarObject* VarObject = NewObject<UALS_PropVarObject>();
-            VarObject->PropertyName = VarOwner->GetFName();
-            VarObject->IsSubHead = true;
+            VarObject->VarProperty = VarProperty;
+            VarObject->PropertyName = VarProperty->GetFName();
+            VarObject->VarContext = PropWorldObject->VarContext;
+            VarObject->VarOwner = Pair.Key;
+            VarObject->MessageList = PropWorldObject->MessageList;
+            VarObject->IsSubHead = false;
 
             VarObjects.Add(VarObject);
-            SubHeads.Add(VarOwner->GetName());
         }
-        
-        UALS_PropVarObject* VarObject = NewObject<UALS_PropVarObject>();
-        VarObject->VarProperty = VarProperty;
-        VarObject->PropertyName = VarProperty->GetFName();
-        VarObject->VarContext = PropWorldObject->VarContext;
-        VarObject->VarOwner = VarOwner;
-        VarObject->MessageList = PropWorldObject->MessageList;
-        VarObject->IsSubHead = false;
-
-        VarObjects.Add(VarObject);      
     }
 
     bool IsArrayEmpty = VarObjects.IsEmpty();
