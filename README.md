@@ -11,17 +11,6 @@ The **Advanced Logging System (ALS)** is a complete debugging toolkit for Unreal
 
 ---
 
-## Features Overview
-
-- **Enhanced Print String Node** – Connect any data type, add pins dynamically, and toggle 3D world debug.
-- **C++ Debug Macros** – Type-safe variadic macros with configurable presets.
-- **Property Inspector** – Monitor and log property values at runtime.
-- **Logs Viewer** – View, filter, and search all ALS logs across instances.
-- **BT Blackboard Logging** – Track blackboard key value changes directly on AI characters.
-- **Batch Print Manager** – Modify all Print String nodes in your project at once.
-
----
-
 ## Contributing / Reporting Issues
 
 If you encounter a bug or want to suggest a feature, please use the **Issues** tab above.  
