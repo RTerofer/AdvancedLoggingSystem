@@ -105,7 +105,7 @@ public:
     bool IsExpanded;
 
     UPROPERTY(BlueprintReadOnly, Category = "ALS PropertyWorldObject")
-    bool bIsInHerited;
+    bool bIsAllComponents;
 
     UFUNCTION()
     void HandleActorDestroyed(AActor* DestroyedActor);

@@ -56,7 +56,7 @@ TArray<AActor*> UALS_PropertyUMG::GetAllActorsInWorld()
     return GameActors;
 }
 
-TMap<UObject*, TArray<FProperty*>> UALS_PropertyUMG::GetAllPropertiesOfObject(UALS_PropWorldObject* PropWorldObject, const FString& FilterProperty, const bool& bIsInherited)
+TMap<UObject*, TArray<FProperty*>> UALS_PropertyUMG::GetAllPropertiesOfObject(UALS_PropWorldObject* PropWorldObject, const FString& FilterProperty, const bool& bIsAllComponents)
 {
     TMap<UObject*, TArray<FProperty*>> OutProps;
     if (!PropWorldObject || !PropWorldObject->VarContext) return OutProps;
@@ -84,7 +84,7 @@ TMap<UObject*, TArray<FProperty*>> UALS_PropertyUMG::GetAllPropertiesOfObject(UA
 
     OutProps.Add(PropWorldObject->VarContext, GatherProps(PropWorldObject->VarContext));
 
-    if (bIsInherited || !FilterProperty.IsEmpty())
+    if (bIsAllComponents || !FilterProperty.IsEmpty())
     {
         if (AActor* Actor = Cast<AActor>(PropWorldObject->VarContext))
         {
@@ -105,25 +105,31 @@ void UALS_PropertyUMG::SetWorldObjects(UListView* InObjectList, UListView* InMes
     TArray<AActor*> FoundActors(GetAllActorsInWorld());
     InObjectList->ClearListItems();
 
+    auto AddWorldObject = [&](UObject* Object, FString Context) -> UALS_PropWorldObject*
+    {
+        UALS_PropWorldObject* WorldObject = NewObject<UALS_PropWorldObject>();
+        WorldObject->VarContext = Object;
+        WorldObject->ObjectName = Context;
+        WorldObject->MessageList = InMessageList;
+        WorldObject->ObjectList = InObjectList;
+        WorldObject->FilterProperty = FilterProperty;
+
+        return WorldObject;
+	};
+
     TArray<UALS_PropWorldObject*> WorldObjects;
 
     for (AActor* Actor : FoundActors)
     {
         FString ContextString = Actor->GetName().Replace(TEXT("_C_"), TEXT(" #"));
 
-        #if WITH_EDITOR
-            if (UALS_Settings::Get()->UseActorLabel) ContextString = Actor->GetActorLabel();       
+        #if UE_BUILD_DEVELOPMENT
+            if (UALS_Settings::Get()->UseActorLabel) ContextString = Actor->GetActorLabel();
         #endif
 
         if (FilterObject.IsEmpty() || ContextString.Contains(FilterObject))
         {
-            UALS_PropWorldObject* WorldObject = NewObject<UALS_PropWorldObject>();
-            WorldObject->VarContext = Cast<UObject>(Actor);
-            WorldObject->ObjectName = ContextString;
-            WorldObject->MessageList = InMessageList;
-            WorldObject->ObjectList = InObjectList;
-            WorldObject->FilterProperty = FilterProperty;
-
+            UALS_PropWorldObject* WorldObject = AddWorldObject(Cast<UObject>(Actor), ContextString);
             Actor->OnDestroyed.AddDynamic(WorldObject, &UALS_PropWorldObject::HandleActorDestroyed);
             WorldObjects.Add(WorldObject);
         }
@@ -133,30 +139,47 @@ void UALS_PropertyUMG::SetWorldObjects(UListView* InObjectList, UListView* InMes
 
     if (FilterObject.IsEmpty() || GameInstance->GetName().Contains(FilterObject))
     {
-        UALS_PropWorldObject* WorldObject = NewObject<UALS_PropWorldObject>();
-        WorldObject->VarContext = GameInstance;
-        WorldObject->ObjectName = GameInstance->GetName();
+        UALS_PropWorldObject* WorldObject = AddWorldObject(GameInstance, GameInstance->GetName());
         WorldObjects.Add(WorldObject);
     }
 
     InObjectList->SetListItems(WorldObjects);
 }
 
-void UALS_PropertyUMG::SetVarObjects(UALS_PropWorldObject* PropWorldObject, UListView* InPropertyList, UExpandableArea* PropertyExpand, const bool& bIsInherited)
+void UALS_PropertyUMG::SetVarObjects(UALS_PropWorldObject* PropWorldObject, UListView* InPropertyList, UExpandableArea* PropertyExpand, const bool& bIsAllComponents)
 {
     if (!PropWorldObject) return;
 
     FString FilterProperty = PropWorldObject->FilterProperty;
-    TMap<UObject*, TArray<FProperty*>> MappedProperties = GetAllPropertiesOfObject(PropWorldObject, FilterProperty, bIsInherited);
 
+    TMap<UObject*, TArray<FProperty*>> MappedProperties = GetAllPropertiesOfObject(PropWorldObject, FilterProperty, bIsAllComponents);
     InPropertyList->ClearListItems();
 
     TArray<UALS_PropVarObject*> VarObjects;
 
     for (const auto& Pair : MappedProperties)
     {
+        if (Pair.Value.IsEmpty()) continue;
+
         UALS_PropVarObject* SubHeadObject = NewObject<UALS_PropVarObject>();
-        SubHeadObject->PropertyName = Pair.Key->GetFName();
+
+        FString ContextString;
+
+        AActor* OwnerActor = Cast<AActor>(Pair.Key);
+        if (OwnerActor)
+        {
+            ContextString = OwnerActor->GetName().Replace(TEXT("_C_"), TEXT(" #"));
+
+            #if UE_BUILD_DEVELOPMENT
+                if (UALS_Settings::Get()->UseActorLabel) ContextString = OwnerActor->GetActorLabel();
+            #endif
+        }
+        else
+        {
+			ContextString = Pair.Key->GetName();
+        }
+
+        SubHeadObject->PropertyName = FName(ContextString);
         SubHeadObject->IsSubHead = true;
 
         VarObjects.Add(SubHeadObject);
@@ -180,7 +203,7 @@ void UALS_PropertyUMG::SetVarObjects(UALS_PropWorldObject* PropWorldObject, ULis
 
     bool IsExpanded = (!IsArrayEmpty && !FilterProperty.IsEmpty());
     PropertyExpand->SetIsExpanded(IsExpanded);
-    PropWorldObject->bIsInHerited = bIsInherited;
+    PropWorldObject->bIsAllComponents = bIsAllComponents;
 
     InPropertyList->SetListItems(VarObjects);
 }
@@ -209,9 +232,10 @@ bool UALS_PropertyUMG::SetMsgObject(UALS_PropVarObject* PropVarObject)
 
 UALS_PropMsgObject* UALS_PropertyUMG::DoesMsgObject(UALS_PropVarObject* PropVarObject)
 {
-    if (!PropVarObject) return nullptr;
+    if (!PropVarObject || PropVarObject->IsSubHead) return nullptr;
 
     TArray<UObject*> ExistingMsgObjects = PropVarObject->MessageList->GetListItems();
+
     for (UObject* ExistingObj : ExistingMsgObjects)
     {
         if (UALS_PropMsgObject* MsgObj = Cast<UALS_PropMsgObject>(ExistingObj))

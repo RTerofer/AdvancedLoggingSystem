@@ -33,7 +33,7 @@ public:
 protected:
 
     TArray<AActor*> GetAllActorsInWorld();
-    TMap<UObject*, TArray<FProperty*>> GetAllPropertiesOfObject(UALS_PropWorldObject* PropWorldObject, const FString& FilterProperty, const bool& bIsInherited);
+    TMap<UObject*, TArray<FProperty*>> GetAllPropertiesOfObject(UALS_PropWorldObject* PropWorldObject, const FString& FilterProperty, const bool& bIsAllComponents);
 
     virtual void NativeConstruct() override;
     
@@ -44,7 +44,7 @@ protected:
     void SetWorldObjects(UListView* InObjectList, UListView* InMessageList, const FString& FilterObject, const FString& FilterProperty);
 
     UFUNCTION(BlueprintCallable, Category = "ALS PropertyInspector")
-    void SetVarObjects(UALS_PropWorldObject* PropWorldObject, UListView* InPropertyList, UExpandableArea* PropertyExpand, const bool& bIsInherited);
+    void SetVarObjects(UALS_PropWorldObject* PropWorldObject, UListView* InPropertyList, UExpandableArea* PropertyExpand, const bool& bIsAllComponents);
 
     UFUNCTION(BlueprintCallable, Category = "ALS PropertyInspector")
     bool SetMsgObject(UALS_PropVarObject* PropVarObject);

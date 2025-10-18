@@ -84,25 +84,26 @@ bool UALS_PropMsgObject::TickableSubscribe(float DeltaTime)
     void* ValuePtr = VarProperty->ContainerPtrToValuePtr<void>(VarOwner);
     UALS_Globals::ConvertToString_Property(VarProperty, ValuePtr, OutValue);
 
+    FString ContextString;
+
     AActor* OwnerActor = Cast<AActor>(VarContext);
     UActorComponent* OwnerComp = Cast<UActorComponent>(VarOwner);
-
-    FString ContextString;
 
     if (OwnerComp)
     {
         ContextString = OwnerComp->GetReadableName();
     }
+    else if (OwnerActor)
+    {
+        ContextString = OwnerActor->GetName().Replace(TEXT("_C_"), TEXT(" #"));
+
+        #if UE_BUILD_DEVELOPMENT
+            if (UALS_Settings::Get()->UseActorLabel) ContextString = OwnerActor->GetActorLabel();
+        #endif
+    }
     else
     {
-        ContextString = VarOwner->GetName().Replace(TEXT("_C_"), TEXT(" #"));
-
-        #if WITH_EDITOR
-            if (OwnerActor && UALS_Settings::Get()->UseActorLabel)
-            {
-                ContextString = OwnerActor->GetActorLabel();
-            }
-        #endif
+		ContextString = VarOwner->GetName();
     }
 
     Context = FString::Printf(TEXT("[%s]"), *ContextString);
