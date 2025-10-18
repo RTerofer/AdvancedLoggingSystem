@@ -107,7 +107,15 @@ void FALSEditorModule::StartupModule()
     );
 
     CommandsList->MapAction(
-        FALSCommands::Get().OpenSupport,
+        FALSCommands::Get().OpenGithub,
+        FExecuteAction::CreateLambda([]()
+            {
+                FPlatformProcess::LaunchURL(TEXT("https://github.com/RTerofer/AdvancedLoggingSystem"), nullptr, nullptr);
+            })
+    );
+
+    CommandsList->MapAction(
+        FALSCommands::Get().OpenForum,
         FExecuteAction::CreateLambda([]()
             {
                 FPlatformProcess::LaunchURL(TEXT("https://forums.unrealengine.com/t/advanced-logging-system-plugin/2513455"), nullptr, nullptr);
@@ -183,7 +191,8 @@ TSharedRef<SWidget> FALSEditorModule::GenerateToolbarMenu()
     MenuBuilder.BeginSection("Support", LOCTEXT("Support", "Support"));
     {
         MenuBuilder.AddMenuEntry(FALSCommands::Get().OpenDocumentation);
-        MenuBuilder.AddMenuEntry(FALSCommands::Get().OpenSupport);
+        MenuBuilder.AddMenuEntry(FALSCommands::Get().OpenGithub);
+        MenuBuilder.AddMenuEntry(FALSCommands::Get().OpenForum);
         MenuBuilder.AddMenuEntry(FALSCommands::Get().OpenFeedback);
     }
     MenuBuilder.EndSection();

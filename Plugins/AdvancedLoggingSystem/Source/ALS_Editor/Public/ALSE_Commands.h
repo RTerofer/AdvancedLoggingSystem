@@ -22,6 +22,7 @@ public:
     TSharedPtr<FUICommandInfo> OpenListsForUPS;
     TSharedPtr<FUICommandInfo> OpenLogViewer;
     TSharedPtr<FUICommandInfo> OpenDocumentation;
-    TSharedPtr<FUICommandInfo> OpenSupport;
+    TSharedPtr<FUICommandInfo> OpenGithub;
+    TSharedPtr<FUICommandInfo> OpenForum;
     TSharedPtr<FUICommandInfo> OpenFeedback;
 };
