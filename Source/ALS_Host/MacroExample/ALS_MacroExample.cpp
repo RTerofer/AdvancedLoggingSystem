@@ -88,29 +88,30 @@ void AALS_MacroExample::MacroSomeExample()
 	TArray<int32> ObjArray;
 	AActor* HitActor = this;
 	AActor* OverlappedActor = this;
-	TMap<int32, FString> MyMap;
+	TMap<EConsumables, int32> MyConsumableMap;
+	TWeakObjectPtr<AActor> WeakObj = HitActor;
 
 
-	// Print Info
+	// Print Info - (Args...)
 	PrintInfo("Location:", GetActorLocation());
 
-	// Print Warn
-	PrintWarn("Warn:", this, "has low health");
+	// Print Warn - (Args...)
+	PrintWarn("Consumable is added to inventory: ", EConsumables::Banana);
 
-	//Print Error
-	PrintError("Error: No Valid elements: ", ObjArray.Num());
+	//Print Error - (Args...)
+	PrintError("Error: WeakObjPtr is not valid", WeakObj);
 
-	// Log Info
+	// Log Info - (Args...)
 	LogInfo("My Struct:", FPlayerData(), "\nMyEnum:", EConsumables::Banana);
 
-	// Log Warn
-	LogWarn("HitActor: ", HitActor, "\nForwardVec:", HitActor->GetActorForwardVector());
+	// Log Warn - (Args...)
+	LogWarn("HitActor: ", HitActor, "\nForwardVec: ", HitActor->GetActorForwardVector());
 
-	// Log Error
-	LogError((MyMap.Find(1) ? "Value Found" : "Couldn't Find Value"));
+	// Log Error  - (Args...)
+	LogError((MyConsumableMap.Find(EConsumables::Apple) ? "Found" : "NotFound"));
 
-	// Print To World
-	Print3D(this, "PlayerName: ", OverlappedActor);
+	// Print To World - (Location, Args...)
+	Print3D(GetActorLocation(), "PlayerName: ", OverlappedActor);
 
 }
 

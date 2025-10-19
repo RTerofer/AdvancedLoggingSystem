@@ -123,9 +123,9 @@ void UALS_PropertyUMG::SetWorldObjects(UListView* InObjectList, UListView* InMes
     {
         FString ContextString = Actor->GetName().Replace(TEXT("_C_"), TEXT(" #"));
 
-        #if UE_BUILD_DEVELOPMENT
-            if (UALS_Settings::Get()->UseActorLabel) ContextString = Actor->GetActorLabel();
-        #endif
+#if WITH_EDITOR
+        if (UALS_Settings::Get()->UseActorLabel) ContextString = Actor->GetActorLabel();
+#endif
 
         if (FilterObject.IsEmpty() || ContextString.Contains(FilterObject))
         {
@@ -170,9 +170,9 @@ void UALS_PropertyUMG::SetVarObjects(UALS_PropWorldObject* PropWorldObject, ULis
         {
             ContextString = OwnerActor->GetName().Replace(TEXT("_C_"), TEXT(" #"));
 
-            #if UE_BUILD_DEVELOPMENT
-                if (UALS_Settings::Get()->UseActorLabel) ContextString = OwnerActor->GetActorLabel();
-            #endif
+#if WITH_EDITOR
+            if (UALS_Settings::Get()->UseActorLabel) ContextString = OwnerActor->GetActorLabel();
+#endif
         }
         else
         {

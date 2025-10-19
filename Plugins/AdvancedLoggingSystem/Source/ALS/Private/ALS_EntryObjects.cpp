@@ -97,9 +97,9 @@ bool UALS_PropMsgObject::TickableSubscribe(float DeltaTime)
     {
         ContextString = OwnerActor->GetName().Replace(TEXT("_C_"), TEXT(" #"));
 
-        #if UE_BUILD_DEVELOPMENT
-            if (UALS_Settings::Get()->UseActorLabel) ContextString = OwnerActor->GetActorLabel();
-        #endif
+#if WITH_EDITOR
+        if (UALS_Settings::Get()->UseActorLabel) ContextString = OwnerActor->GetActorLabel();
+#endif
     }
     else
     {
