@@ -16,15 +16,10 @@ The **Advanced Logging System (ALS)** is a complete debugging toolkit for Unreal
 If you encounter a bug or want to suggest a feature, please use the **Issues** tab above.  
 When reporting a bug, please include:
 - Unreal Engine version  
-- Plugin version (from `.uplugin`)  
+- Plugin version
 - Steps to reproduce the issue  
 - A screenshot or crash log if possible  
 
----
-
-## A Note from the Developer
-
-This plugin was originally a paid product, but it’s now **completely free** to help the Unreal community debug faster and smarter.  
-I’ll continue improving and maintaining it, any feedback is greatly appreciated!  
+I’ll continue improving and maintaining it, any feedback is greatly appreciated!
 
 ---
