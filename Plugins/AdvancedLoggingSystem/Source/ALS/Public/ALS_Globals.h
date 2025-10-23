@@ -12,6 +12,7 @@
 #include "ALS_Settings.h"
 #include "DrawDebugHelpers.h"
 #include "GameplayTagContainer.h"
+#include "Kismet/KismetSystemLibrary.h"
 #include "Net/UnrealNetwork.h"
 
 inline FLogCategory<ELogVerbosity::Log, ELogVerbosity::All> LogALS(TEXT("LogALS"));
@@ -429,11 +430,11 @@ public:
         }
         else if constexpr (std::is_pointer_v<U> && std::is_base_of_v<UObject, std::remove_pointer_t<U>>)
         {
-            return InValue ? *InValue->GetName() : TEXT("Null UObject*");
+            return InValue ? UKismetSystemLibrary::GetDisplayName(InValue) : TEXT("Null UObject*");
         }
         else if constexpr (std::is_pointer_v<U> && std::is_arithmetic_v<std::remove_pointer_t<U>>)
         {
-            return InValue ? ConvertToStringCPP(*InValue) : TEXT("Null pointer");
+            return InValue ? ConvertToStringCPP(*InValue) : TEXT("Null Pointer");
         }
         else if constexpr (std::is_pointer_v<U>)
         {
@@ -448,7 +449,7 @@ public:
         }
         else if constexpr (bIsWeakPtr)
         {
-            return InValue.IsValid() ? *InValue.Get()->GetName() : TEXT("Null TWeakObjectPtr");
+            return InValue.IsValid() ? *InValue->GetName() : TEXT("Null TWeakObjectPtr");
         }
         else if constexpr (bIsSubclass)
         {
@@ -460,15 +461,15 @@ public:
         }
         else if constexpr (bIsSharedPtr)
         {
-            return InValue.IsValid() ? **InValue : TEXT("Null TSharedPtr");
+            return (InValue.IsValid() && InValue.Get()) ? *InValue->GetName() : TEXT("Null TSharedPtr");
         }
         else if constexpr (bIsSharedRef)
         {
-            return **InValue;
+            return *InValue->GetName();
         }
         else if constexpr (bIsUniquePtr)
         {
-            return InValue.IsValid() ? **InValue : TEXT("Null TUniquePtr");
+            return InValue ? *InValue->GetName() : TEXT("Null TUniquePtr");
         }
         else if constexpr (bIsSoftObject)
         {
@@ -476,8 +477,7 @@ public:
         }
         else
         {
-            static_assert(!std::is_same_v<T, T>,
-                "Cannot convert this type to string. Add support in ALS_Core.h.");
+            static_assert(!std::is_same_v<T, T>, "Cannot convert this type to string. Add support in ALS_Globals.h.");
         }
     }
 

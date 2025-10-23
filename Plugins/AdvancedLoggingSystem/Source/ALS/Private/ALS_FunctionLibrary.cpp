@@ -187,7 +187,7 @@ FString UALS_FunctionLibrary::ProcessProperty(FFrame& Stack, TArray<EPinType>& P
 
             if (ConnectedObject)
             {
-                OutValue.Append(ConnectedObject->GetName());
+                OutValue.Append(UKismetSystemLibrary::GetDisplayName(ConnectedObject));
             }
             else
             {
