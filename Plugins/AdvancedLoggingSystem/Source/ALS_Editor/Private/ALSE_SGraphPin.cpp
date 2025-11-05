@@ -591,8 +591,82 @@ TSharedRef<SWidget> UALS_SGraphPin::GetDefaultValueWidget()
         return SNullWidget::NullWidget;
     }
 
-    if (!Pin->HasAnyConnections())
+    if (Pin->PinId == Node->KeyPinId)
     {
+        if (Pin->HasAnyConnections())
+        {
+            return SNullWidget::NullWidget;
+        }
+
+        TSharedRef<SEditableTextBox> EditableTextBox = SNew(SEditableTextBox)
+            .Padding(FMargin(5, 4, 5, 4))
+            .Text(FText::FromString(SavedDefault))
+            .HintText(FText::FromString("In String"))
+            .ToolTipText(FText::FromString("When Key Provided, the Messages of same key will be replaced. Useful in tick messages"))
+            .OnTextCommitted(this, &UALS_SGraphPin::OnDefaultTextCommitted)
+            .SelectAllTextWhenFocused(true)
+            .SelectAllTextOnCommit(false)
+            .ClearKeyboardFocusOnCommit(true)
+            .Font(FAppStyle::Get().GetFontStyle("Graph.NormalFont"))
+            .Style(FAppStyle::Get(), "Graph.EditableTextBox")
+            .OnKeyDownHandler(FOnKeyDown::CreateLambda([this](const FGeometry& MyGeometry, const FKeyEvent& KeyEvent) -> FReply
+                {
+                    if (KeyEvent.GetKey() == EKeys::Enter)
+                    {
+                        if (KeyEvent.IsShiftDown())
+                        {
+                            return FReply::Unhandled();
+                        }
+                        else
+                        {
+                            FSlateApplication::Get().ClearKeyboardFocus(EFocusCause::Cleared);
+                            return FReply::Handled();
+                        }
+                    }
+                    return FReply::Unhandled();
+                }));
+
+        TSharedPtr<SHorizontalBox> HorizontalBox = SNew(SHorizontalBox)
+            + SHorizontalBox::Slot()
+            .AutoWidth()
+            .Padding(FMargin(0, 0, 0, 0))
+            [
+                EditableTextBox
+            ];
+
+        if (!SavedDefault.IsEmpty())
+        {
+            HorizontalBox->AddSlot()
+                .AutoWidth()
+                .VAlign(VAlign_Center)
+                .Padding(FMargin(3.5f, 0, 0, 0))
+                [
+                    SNew(SButton)
+                        .ButtonStyle(FAppStyle::Get(), "HoverHintOnly")
+                        .ToolTipText(FText::FromString("Clear Text"))
+                        .OnClicked_Lambda([this, EditableTextBox, Node]() -> FReply
+                            {
+                                EditableTextBox->SetText(FText::FromName(NAME_None));
+                                OnDefaultTextCommitted(FText::FromName(NAME_None), ETextCommit::Default);
+                                return FReply::Handled();
+                            })
+                        [
+                            SNew(SImage)
+                                .Image(FALSStyle::Get().GetBrush("ALS.Undo"))
+                        ]
+                ];
+        }
+
+        return HorizontalBox.ToSharedRef();
+    }
+
+    if (Node->IsWildcardPin(Pin))
+    {
+        if (Pin->HasAnyConnections())
+        {
+            return SNullWidget::NullWidget;
+        }
+
         TSharedRef<SMultiLineEditableTextBox> EditableTextBox = SNew(SMultiLineEditableTextBox)
             .Padding(FMargin(5, 4, 5, 4))
             .Text(FText::FromString(SavedDefault))

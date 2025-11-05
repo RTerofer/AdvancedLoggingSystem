@@ -1246,6 +1246,16 @@ void FALSEditorModule::ReplaceUPSWithALS(const FAssetData& BlueprintAsset)
             ReplaceDataPins(NewNode, NewDurationPin, OldDurationPin);
 
 
+            //  Key Pin Replacement
+            UEdGraphPin* NewKeyPin = NewNode->FindPinById(NewNode->KeyPinId);
+            UEdGraphPin* OldKeyPin = OldNode->FindPinChecked(TEXT("Key"));
+            if (NewKeyPin && OldKeyPin)
+            {
+                NewNode->PrintKey = FName(OldKeyPin->DefaultValue);
+            }
+            ReplaceDataPins(NewNode, NewKeyPin, OldKeyPin);
+
+
             // PrintMode Pin Replacement
             UEdGraphPin* NewPrintModePin = NewNode->FindPinById(NewNode->PrintModePinId);
             UEdGraphPin* OldScreenPin = OldNode->FindPinChecked(TEXT("bPrintToScreen"));

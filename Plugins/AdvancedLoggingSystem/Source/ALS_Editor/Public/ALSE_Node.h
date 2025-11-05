@@ -32,10 +32,10 @@ struct FSavedPinData
     FString PinToolTip;
 
     UPROPERTY()
-    TEnumAsByte<EEdGraphPinDirection> Direction;
+    FEdGraphPinType PinType;
 
     UPROPERTY()
-    FEdGraphPinType PinType;
+    TEnumAsByte<EEdGraphPinDirection> Direction;
 
     UPROPERTY()
     bool bAdvancedView = false;
@@ -45,17 +45,15 @@ struct FSavedPinData
 
     FSavedPinData() {}
 
-    FSavedPinData(UEdGraphPin* Pin)
-    {
-        PinId = Pin->PinId;
-        PinName = Pin->PinName;
-        PinFriendlyName = Pin->PinFriendlyName;
-        PinToolTip = Pin->PinToolTip;
-        PinType = Pin->PinType;
-        Direction = Pin->Direction;
-        bAdvancedView = Pin->bAdvancedView;
-        HasAnyConnections = Pin->HasAnyConnections();
-    }
+	FSavedPinData(UEdGraphPin* Pin) 
+        : PinId(Pin->PinId), PinName(Pin->PinName)
+        , PinFriendlyName(Pin->PinFriendlyName)
+        , PinToolTip(Pin->PinToolTip)
+        , PinType(Pin->PinType)
+        , Direction(Pin->Direction)
+        , bAdvancedView(Pin->bAdvancedView)
+        , HasAnyConnections(Pin->HasAnyConnections())
+    {}
 };
 
 UCLASS()
@@ -76,7 +74,6 @@ protected:
     virtual bool IsConnectionDisallowed(const UEdGraphPin* MyPin, const UEdGraphPin* OtherPin, FString& OutReason) const override;
     virtual void PinConnectionListChanged(UEdGraphPin* Pin) override;
     virtual void ReallocatePinsDuringReconstruction(TArray<UEdGraphPin*>& OldPins) override;
-    void HandleGraphChanged(const FEdGraphEditAction& Action);
     virtual void Serialize(FArchive& Ar) override;
     virtual void PostEditImport() override;
     virtual void PostEditUndo() override;
@@ -95,6 +92,8 @@ public:
     virtual void ReconstructNode() override;
 
 private:
+    void HandleGraphChanged(const FEdGraphEditAction& Action);
+
     void CreateDefaultPins();
     void CreateAdvancedPins();
     UEdGraphPin* CreateTextLocationPin();
@@ -102,7 +101,6 @@ private:
 
     void SaveCurrentPins();
 
-    bool IsWildcardPin(const UEdGraphPin* Pin) const;
     FString GetAlphabetFromIndex(int32 Index) const;
     int32 GetSavedPinIndex(UEdGraphPin* Pin) const;
     int32 GetSavedPinIndex(FGuid PinId) const;
@@ -132,6 +130,7 @@ public:
     int32 GetWildcardPinCount() const;
     int32 GetExecPinCount() const;
 
+    bool IsWildcardPin(const UEdGraphPin* Pin) const;
     bool IsNonContextBP() const;
 
 private:
@@ -189,6 +188,9 @@ public:
     FGuid ColorPinId;
 
     UPROPERTY()
+    FGuid KeyPinId;
+
+    UPROPERTY()
     FGuid PrintModePinId;
 
     UPROPERTY()
@@ -214,6 +216,9 @@ public:
 
     UPROPERTY(EditDefaultsOnly, meta = (DisplayName = "Color", Category = "Config"))
     FLinearColor PrintColor;
+
+    UPROPERTY(EditDefaultsOnly, meta = (DisplayName = "Key", Category = "Config"))
+    FName PrintKey;
 
     UPROPERTY(EditDefaultsOnly, meta = (DisplayName = "Print Mode", Category = "Config"))
     EPrintMode PrintMode;

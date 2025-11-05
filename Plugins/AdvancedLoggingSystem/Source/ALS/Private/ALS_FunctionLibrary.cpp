@@ -25,6 +25,7 @@ DEFINE_FUNCTION(UALS_FunctionLibrary::execPrintHelperONE)
     P_GET_OBJECT(UObject, WorldContext);
     P_GET_STRUCT(FLinearColor, PrintColor);
     P_GET_PROPERTY(FFloatProperty, Duration);
+    P_GET_PROPERTY(FNameProperty, Key);
     P_GET_PROPERTY(FByteProperty, PrintModeByte);
     P_GET_PROPERTY(FByteProperty, LogSeverityByte);
     P_GET_UBOOL(DrawDebug);
@@ -44,7 +45,7 @@ DEFINE_FUNCTION(UALS_FunctionLibrary::execPrintHelperONE)
     }
 
     FString PrintString = ProcessProperty(Stack, PinTypes, LiteralStrings, 3);
-    ProcessPrint(PrintString, PrintColor, Duration, OutputMode, Level, DrawDebug, TextLocation, BaseObject, WorldContext, SourceID);
+    ProcessPrint(PrintString, PrintColor, Duration, Key, OutputMode, Level, DrawDebug, TextLocation, BaseObject, WorldContext, SourceID);
 
     P_FINISH;
 }
@@ -54,6 +55,7 @@ DEFINE_FUNCTION(UALS_FunctionLibrary::execPrintHelperTWO)
     P_GET_OBJECT(UObject, WorldContext);
     P_GET_STRUCT(FLinearColor, PrintColor);
     P_GET_PROPERTY(FFloatProperty, Duration);
+    P_GET_PROPERTY(FNameProperty, Key);
     P_GET_PROPERTY(FByteProperty, PrintModeByte);
     P_GET_PROPERTY(FByteProperty, LogSeverityByte);
     P_GET_UBOOL(DrawDebug);
@@ -73,7 +75,7 @@ DEFINE_FUNCTION(UALS_FunctionLibrary::execPrintHelperTWO)
     }
 
     FString PrintString = ProcessProperty(Stack, PinTypes, LiteralStrings, 5);
-    ProcessPrint(PrintString, PrintColor, Duration, OutputMode, Level, DrawDebug, TextLocation, BaseObject, WorldContext, SourceID);
+    ProcessPrint(PrintString, PrintColor, Duration, Key, OutputMode, Level, DrawDebug, TextLocation, BaseObject, WorldContext, SourceID);
 
     P_FINISH;
 }
@@ -83,6 +85,7 @@ DEFINE_FUNCTION(UALS_FunctionLibrary::execPrintHelperTHREE)
     P_GET_OBJECT(UObject, WorldContext);
     P_GET_STRUCT(FLinearColor, PrintColor);
     P_GET_PROPERTY(FFloatProperty, Duration);
+    P_GET_PROPERTY(FNameProperty, Key);
     P_GET_PROPERTY(FByteProperty, PrintModeByte);
     P_GET_PROPERTY(FByteProperty, LogSeverityByte);
     P_GET_UBOOL(DrawDebug);
@@ -102,7 +105,7 @@ DEFINE_FUNCTION(UALS_FunctionLibrary::execPrintHelperTHREE)
     }
 
     FString PrintString = ProcessProperty(Stack, PinTypes, LiteralStrings, 7);
-    ProcessPrint(PrintString, PrintColor, Duration, OutputMode, Level, DrawDebug, TextLocation, BaseObject, WorldContext, SourceID);
+    ProcessPrint(PrintString, PrintColor, Duration, Key, OutputMode, Level, DrawDebug, TextLocation, BaseObject, WorldContext, SourceID);
 
     P_FINISH;
 }
@@ -112,6 +115,7 @@ DEFINE_FUNCTION(UALS_FunctionLibrary::execPrintHelperFOUR)
     P_GET_OBJECT(UObject, WorldContext);
     P_GET_STRUCT(FLinearColor, PrintColor);
     P_GET_PROPERTY(FFloatProperty, Duration);
+    P_GET_PROPERTY(FNameProperty, Key);
     P_GET_PROPERTY(FByteProperty, PrintModeByte);
     P_GET_PROPERTY(FByteProperty, LogSeverityByte);
     P_GET_UBOOL(DrawDebug);
@@ -131,7 +135,7 @@ DEFINE_FUNCTION(UALS_FunctionLibrary::execPrintHelperFOUR)
     }
 
     FString PrintString = ProcessProperty(Stack, PinTypes, LiteralStrings, 10);
-    ProcessPrint(PrintString, PrintColor, Duration, OutputMode, Level, DrawDebug, TextLocation, BaseObject, WorldContext, SourceID);
+    ProcessPrint(PrintString, PrintColor, Duration, Key, OutputMode, Level, DrawDebug, TextLocation, BaseObject, WorldContext, SourceID);
 
     P_FINISH;
 }
@@ -235,9 +239,9 @@ FString UALS_FunctionLibrary::ProcessProperty(FFrame& Stack, TArray<EPinType>& P
     return OutValue.ToString();
 }
 
-void UALS_FunctionLibrary::ProcessPrint(const FString& PrintString, const FLinearColor& PrintColor, const float& Duration, const EPrintMode& PrintMode, const ELogSeverity& LogSeverity, const bool& DrawDebug, const FVector& TextLocation, const UObject* BaseObject, const UObject* Context, const FString& SourceID)
+void UALS_FunctionLibrary::ProcessPrint(const FString& PrintString, const FLinearColor& PrintColor, const float& Duration, const FName Key, const EPrintMode& PrintMode, const ELogSeverity& LogSeverity, const bool& DrawDebug, const FVector& TextLocation, const UObject* BaseObject, const UObject* Context, const FString& SourceID)
 {
-    FPrintConfig PrintConfig = FPrintConfig(PrintColor.ToFColor(true), Duration, LogSeverity, PrintMode);
+    FPrintConfig PrintConfig = FPrintConfig(Key, Duration, PrintColor.ToFColor(true), LogSeverity, PrintMode);
 
     if (DrawDebug)
     {

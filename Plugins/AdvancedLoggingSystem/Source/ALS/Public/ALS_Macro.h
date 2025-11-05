@@ -24,7 +24,7 @@
 //----------------------------------------------------------------------------------------------------------------------
 
 
-// -- Print & Log Macros --   Example:- PrintInfo("Overlapped: ", ActorPointer, " IsMovable: ", RootComp->Mobility);
+// -- Print & Log Macros --  Example:- PrintInfo("Overlapped: ", ActorPointer, " IsMovable: ", RootComp->Mobility);
 //----------------------------------------------------------------------------------------------------------------------
 
 #define PrintInfo(...)  UALS_Globals::PrintALSCPP(PrintInfoPreset, this, SOURCE_ID, __VA_ARGS__)
@@ -33,7 +33,7 @@
 
 
 
-// -- Log Macros --      Example:- LogInfo("MyStruct: ", Struct, "MyArray: ", Array);
+// -- Log Macros --  Example:- LogInfo("MyStruct: ", Struct, "MyArray: ", Array);
 //----------------------------------------------------------------------------------------------------------------------
 
 #define LogInfo(...)  UALS_Globals::PrintALSCPP(LogInfoPreset, this, SOURCE_ID, __VA_ARGS__)
@@ -45,24 +45,24 @@
 // -- Print To World Macros --  Example:- Print3D(HitLocation, "HitBy: ", EnemyActor);
 //----------------------------------------------------------------------------------------------------------------------
 
-#define Print3D(LocationArg, ...) UALS_Globals::DrawALSCPP(Print3DPreset, this, SOURCE_ID, LocationArg, __VA_ARGS__)
+#define Print3D(Location, ...) UALS_Globals::DrawALSCPP(Print3DPreset, this, SOURCE_ID, Location, __VA_ARGS__)
 
 
 
-// -- CUSTOM MACROS --        Example:- JustPrint(FColor::Blue, "Your Message From Static Function");
+// -- CUSTOM MACROS --  Example:- JustPrint(FColor::Blue, "Your Message From Static Function");
 //----------------------------------------------------------------------------------------------------------------------
 
 #define PrintCustom(PrintConfig, ...) UALS_Globals::PrintALSCPP(PrintConfig, this, SOURCE_ID, __VA_ARGS__)
 
-#define Print3DCustom(Preset, LocationArg, ...) UALS_Globals::DrawALSCPP(GETCONFIG(Preset), this, SOURCE_ID, LocationArg, __VA_ARGS__)
+#define Print3DCustom(PrintConfig, Location, ...) UALS_Globals::DrawALSCPP(PrintConfig, this, SOURCE_ID, Location, __VA_ARGS__)
 
-#define JustPrint(Color, Duration, ...)  UALS_Globals::PrintALSCPP(FPrintConfig(Color, Duration, ELogSeverity::Info, EPrintMode::ScreenOnly), nullptr, SOURCE_ID, __VA_ARGS__)
+#define PrintPreset(Preset, ...)  UALS_Globals::PrintALSCPP(GETCONFIG(Preset), this, SOURCE_ID, __VA_ARGS__)
 
-#define JustLog(Level, ...) UALS_Globals::PrintALSCPP(FPrintConfig(FColor::White, 0.0f, Level, EPrintMode::LogOnly), nullptr, SOURCE_ID, __VA_ARGS__)
+#define LogPreset(Preset, ...)  UALS_Globals::PrintALSCPP(GETCONFIG(Preset), this, SOURCE_ID, __VA_ARGS__)
 
-#define PrintWithCtx(Preset, Context, ...)  UALS_Globals::PrintALSCPP(GETCONFIG(Preset), Context, SOURCE_ID, __VA_ARGS__)
+#define JustPrint(Key, Duration, Color, ...)  UALS_Globals::PrintALSCPP(FPrintConfig(Key, Duration, Color, ELogSeverity::Info, EPrintMode::ScreenOnly), nullptr, SOURCE_ID, __VA_ARGS__)
 
-#define LogWithCtx(Preset, Context, ...)  UALS_Globals::PrintALSCPP(GETCONFIG(Preset), Context, SOURCE_ID, __VA_ARGS__)
+#define JustLog(Level, ...) UALS_Globals::PrintALSCPP(FPrintConfig(NAME_None, 0.0f, FColor::White, Level, EPrintMode::LogOnly), nullptr, SOURCE_ID, __VA_ARGS__)
 
 #define ALSFileLog(Message, LogSeverity)  UALS_FileLog::CreateMessageLog(this, SOURCE_ID, Message, LogSeverity)
 

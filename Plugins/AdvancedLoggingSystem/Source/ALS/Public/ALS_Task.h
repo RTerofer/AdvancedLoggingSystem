@@ -22,6 +22,8 @@ protected:
     virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
     virtual FString GetStaticDescription() const override;
 
+    virtual void InitializeFromAsset(UBehaviorTree& Asset) override;
+
     virtual void OnGameplayTaskActivated(UGameplayTask& Task) override {};
     virtual void OnGameplayTaskDeactivated(UGameplayTask& Task) override {};
 
@@ -45,6 +47,10 @@ public:
     // Print Text Duration
     UPROPERTY(EditAnywhere, Category = "Print Task")
     float TextDuration = 2.0f;
+
+    // Print Key
+    UPROPERTY(EditAnywhere, Category = "Print Service")
+    FName Key = TEXT("-1");
 
     // Log Severity
     UPROPERTY(EditAnywhere, Category = "Print Task")

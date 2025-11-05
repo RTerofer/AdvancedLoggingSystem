@@ -495,7 +495,8 @@ void UALS_Globals::PrintALS(
     const FPrintConfig& PrintConfig, 
     const UObject* Context, 
     const FString& SourceID,
-    bool InitiateFileLog)
+    bool InitiateFileLog
+)
 {
     FColor PrintColor = PrintConfig.Color;
 
@@ -511,7 +512,13 @@ void UALS_Globals::PrintALS(
 
     if (PrintConfig.PrintMode == EPrintMode::ScreenOnly || PrintConfig.PrintMode == EPrintMode::ScreenAndLog)
     {
-        GEngine->AddOnScreenDebugMessage(-1, PrintConfig.Duration, PrintColor, *Screen);
+        uint64 InnerKey = -1;
+        if (PrintConfig.Key != NAME_None)
+        {
+            InnerKey = GetTypeHash(PrintConfig.Key);
+        }
+
+        GEngine->AddOnScreenDebugMessage(InnerKey, PrintConfig.Duration, PrintColor, *Screen);
     }
 
     if (InitiateFileLog)

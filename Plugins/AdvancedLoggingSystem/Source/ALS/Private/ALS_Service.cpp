@@ -9,12 +9,26 @@
 UALS_AI_Service::UALS_AI_Service()
 {
     NodeName = "Print (ALS)";
+
+    INIT_SERVICE_NODE_NOTIFY_FLAGS();
+
     Interval = 1.0f;
     RandomDeviation = 0.0f;
 
     TextLocation.AddObjectFilter(this, GET_MEMBER_NAME_CHECKED(UALS_AI_Service, TextLocation), AActor::StaticClass());
     TextLocation.AddObjectFilter(this, GET_MEMBER_NAME_CHECKED(UALS_AI_Service, TextLocation), USceneComponent::StaticClass());
     TextLocation.AddVectorFilter(this, GET_MEMBER_NAME_CHECKED(UALS_AI_Service, TextLocation));
+}
+
+void UALS_AI_Service::InitializeFromAsset(UBehaviorTree& Asset)
+{
+    Super::InitializeFromAsset(Asset);
+
+    if (UBlackboardData* BBAsset = GetBlackboardAsset())
+    {
+        PrintBBKey.ResolveSelectedKey(*BBAsset);
+        TextLocation.ResolveSelectedKey(*BBAsset);
+    }
 }
 
 void UALS_AI_Service::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
@@ -55,7 +69,7 @@ void UALS_AI_Service::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMem
     AAIController* AICon = OwnerComp.GetAIOwner();
     AActor* Context = AICon ? Cast<AActor>(AICon->GetPawn()) : nullptr;
     FString SourceID = FString::Printf(TEXT("BT%s::%d"), *BlackboardComp->GetName(), this->GetUniqueID());
-    FPrintConfig PrintConfig = FPrintConfig(TextColor, Interval, LogSeverity, EPrintMode::ScreenAndLog);
+    FPrintConfig PrintConfig = FPrintConfig(Key, Interval, TextColor, LogSeverity, EPrintMode::ScreenAndLog);
 
     bool InitiateFileLog = false;
     if (PrevMessage != Message)

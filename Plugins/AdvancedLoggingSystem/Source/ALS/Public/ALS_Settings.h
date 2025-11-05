@@ -141,31 +141,31 @@ public:
 
     // Preset used for PrintInfo
     UPROPERTY(Config, EditDefaultsOnly, Category = "PRESETS", meta = (DisplayName = "Print Info"))
-    FPrintConfig PrintInfoConfig = FPrintConfig(FColor::Green, 3.0f, ELogSeverity::Info, EPrintMode::ScreenAndLog);
+    FPrintConfig PrintInfoConfig = FPrintConfig(NAME_None, 3.0f, FColor::Green, ELogSeverity::Info, EPrintMode::ScreenAndLog);
 
     // Preset used for PrintWarn
     UPROPERTY(Config, EditDefaultsOnly, Category = "PRESETS", meta = (DisplayName = "Print Warn"))
-    FPrintConfig PrintWarnConfig = FPrintConfig(FColor::Yellow, 5.0f, ELogSeverity::Warning, EPrintMode::ScreenAndLog);
+    FPrintConfig PrintWarnConfig = FPrintConfig(NAME_None, 5.0f, FColor::Yellow, ELogSeverity::Warning, EPrintMode::ScreenAndLog);
 
     // Preset used for PrintError
     UPROPERTY(Config, EditDefaultsOnly, Category = "PRESETS", meta = (DisplayName = "Print Error"))
-    FPrintConfig PrintErrorConfig = FPrintConfig(FColor::Red, 7.0f, ELogSeverity::Error, EPrintMode::ScreenAndLog);
+    FPrintConfig PrintErrorConfig = FPrintConfig(NAME_None, 7.0f, FColor::Red, ELogSeverity::Error, EPrintMode::ScreenAndLog);
 
     // Preset used for LogInfo
     UPROPERTY(Config, EditDefaultsOnly, Category = "PRESETS", meta = (DisplayName = "Log Info"))
-    FPrintConfig LogInfoConfig = FPrintConfig(FColor::Green, 0.0f, ELogSeverity::Info, EPrintMode::LogOnly);
+    FPrintConfig LogInfoConfig = FPrintConfig(NAME_None, 0.0f, FColor::Green, ELogSeverity::Info, EPrintMode::LogOnly);
 
     // Preset used for LogWarn
     UPROPERTY(Config, EditDefaultsOnly, Category = "PRESETS", meta = (DisplayName = "Log Warn"))
-    FPrintConfig LogWarnConfig = FPrintConfig(FColor::Yellow, 0.0f, ELogSeverity::Warning, EPrintMode::LogOnly);
+    FPrintConfig LogWarnConfig = FPrintConfig(NAME_None, 0.0f, FColor::Yellow, ELogSeverity::Warning, EPrintMode::LogOnly);
 
     // Preset used for LogError
     UPROPERTY(Config, EditDefaultsOnly, Category = "PRESETS", meta = (DisplayName = "Log Error"))
-    FPrintConfig LogErrorConfig = FPrintConfig(FColor::Red, 0.0f, ELogSeverity::Error, EPrintMode::LogOnly);
+    FPrintConfig LogErrorConfig = FPrintConfig(NAME_None, 0.0f, FColor::Red, ELogSeverity::Error, EPrintMode::LogOnly);
 
     // Preset used for Print3D
     UPROPERTY(Config, EditDefaultsOnly, Category = "PRESETS", meta = (DisplayName = "Print 3D"))
-    FPrintConfig Print3DConfig = FPrintConfig(FColor::Orange, 5.0f, ELogSeverity::Info, EPrintMode::LogOnly);
+    FPrintConfig Print3DConfig = FPrintConfig(NAME_None, 5.0f, FColor::Orange, ELogSeverity::Info, EPrintMode::LogOnly);
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 

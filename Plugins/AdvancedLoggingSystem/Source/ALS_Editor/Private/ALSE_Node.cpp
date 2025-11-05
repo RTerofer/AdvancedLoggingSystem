@@ -58,75 +58,125 @@ void UALS_Node::AllocateDefaultPins()
 
     if (SavedPins.Num() > 0)
     {
-        ReallocatePinsDuringReconstruction(Pins);    
+        ReallocatePinsDuringReconstruction(Pins);
     }
     else
     {
         CreateDefaultPins();
+		ReconstructNode();
     }
 }
 
 void UALS_Node::CreateDefaultPins()
 {
-    ExecPinId = CreateExecPin()->PinId;
-    WorldContextId = CreateWorldContextPin()->PinId;
-    TextLocationPinId = CreateTextLocationPin()->PinId;
-    WildcardPinId = CreateWildcardPin()->PinId;
+    if (!DurationPinId.IsValid())
+    {
+        ExecPinId = CreateExecPin()->PinId;
+    }
+    
+    if (!WorldContextId.IsValid())
+    {
+        WorldContextId = CreateWorldContextPin()->PinId;
+    }
+
+    if (!TextLocationPinId.IsValid())
+    {
+        TextLocationPinId = CreateTextLocationPin()->PinId;
+    }
+
+    if (!WildcardPinId.IsValid())
+    {
+        WildcardPinId = CreateWildcardPin()->PinId;
+    }
 
     CreateAdvancedPins();
-    ReconstructNode();
 }
 
 void UALS_Node::CreateAdvancedPins()
 {
-    UEdGraphPin* DurationPin = CreatePin(EGPD_Input, FName("real"), FName("float"), nullptr, TEXT("Duration"));
-    DurationPin->PinFriendlyName = FText::FromString("Duration");
-    DurationPin->bAdvancedView = true;
-    DurationPin->bHidden = true;
-    DurationPin->PinToolTip = FString("Time in secs the message stays visible on screen.");
+    if(!DurationPinId.IsValid())
+    {
+        UEdGraphPin* DurationPin = CreatePin(EGPD_Input, UEdGraphSchema_K2::PC_Real, UEdGraphSchema_K2::PC_Float, nullptr, TEXT("Duration"));
+        DurationPin->PinFriendlyName = FText::FromString("Duration");
+        DurationPin->bAdvancedView = true;
+        DurationPin->bHidden = true;
+        DurationPin->PinToolTip = FString("Time in secs the message stays visible on screen.");
 
-    UEdGraphPin* ColorPin = CreatePin(EGPD_Input, UEdGraphSchema_K2::PC_Struct, NAME_None, TBaseStructure<FLinearColor>::Get(), TEXT("Color"));
-    ColorPin->PinFriendlyName = FText::FromString("Color");
-    ColorPin->bAdvancedView = true;
-    ColorPin->bHidden = true;
-    ColorPin->PinToolTip = FString("Color of the On-Screen message.");
+        PrintDuration = UALS_Settings::GetConfigFromPreset(PrintPreset).Duration;
 
-    UEdGraphPin* PrintModePin = CreatePin(EGPD_Input, UEdGraphSchema_K2::PC_Byte, StaticEnum<EPrintMode>(), TEXT("PrintMode"));
-    PrintModePin->PinFriendlyName = FText::FromString("PrintMode\t\t\t\t");
-    PrintModePin->bAdvancedView = true;
-    PrintModePin->bHidden = true;
-    PrintModePin->PinToolTip = FString("Choose how the message is output: on screen, log or both.");
+        DurationPin->DefaultValue = FString::SanitizeFloat(PrintDuration);
+        SetDefaultValue(DurationPin);
 
-    UEdGraphPin* LogSeverityPin = CreatePin(EGPD_Input, UEdGraphSchema_K2::PC_Byte, StaticEnum<ELogSeverity>(), TEXT("LogSeverity"));
-    LogSeverityPin->PinFriendlyName = FText::FromString("LogSeverity\t\t\t\t");
-    LogSeverityPin->bAdvancedView = true;
-    LogSeverityPin->bHidden = true;
-    LogSeverityPin->PinToolTip = FString("Set the severity level to Info, Warning or Error.");
+        DurationPinId = DurationPin->PinId;
+	}
 
-    PrintDuration = UALS_Settings::GetConfigFromPreset(PrintPreset).Duration;
-    PrintColor = UALS_Settings::GetConfigFromPreset(PrintPreset).Color;
-    PrintMode = UALS_Settings::GetConfigFromPreset(PrintPreset).PrintMode;
-    LogSeverity = UALS_Settings::GetConfigFromPreset(PrintPreset).LogSeverity;
+    if (!ColorPinId.IsValid())
+    {
+        UEdGraphPin* ColorPin = CreatePin(EGPD_Input, UEdGraphSchema_K2::PC_Struct, NAME_None, TBaseStructure<FLinearColor>::Get(), TEXT("Color"));
+        ColorPin->PinFriendlyName = FText::FromString("Color");
+        ColorPin->bAdvancedView = true;
+        ColorPin->bHidden = true;
+        ColorPin->PinToolTip = FString("Color of the On-Screen message.");
 
-    DurationPin->DefaultValue = FString::SanitizeFloat(PrintDuration);
-    SetDefaultValue(DurationPin);
+        PrintColor = UALS_Settings::GetConfigFromPreset(PrintPreset).Color;
 
-    ColorPin->DefaultValue = PrintColor.ToString();
-    SetDefaultValue(ColorPin);
+        ColorPin->DefaultValue = PrintColor.ToString();
+        SetDefaultValue(ColorPin);
 
-    PrintModePin->DefaultValue = UEnum::GetValueAsString(PrintMode);
-    SetDefaultValue(PrintModePin);
+        ColorPinId = ColorPin->PinId;
+    }
 
-    LogSeverityPin->DefaultValue = UEnum::GetValueAsString(LogSeverity);
-    SetDefaultValue(LogSeverityPin);
+    if (!KeyPinId.IsValid())
+    {
+        UEdGraphPin* KeyPin = CreatePin(EGPD_Input, UEdGraphSchema_K2::PC_Name, NAME_None, TBaseStructure<FLinearColor>::Get(), TEXT("Key"));
+        KeyPin->PinFriendlyName = FText::FromString("Key");
+        KeyPin->bAdvancedView = true;
+        KeyPin->bHidden = true;
+        KeyPin->PinToolTip = FString("When Key Provided, the Messages of same key will be replaced. Useful in tick messages");
 
-    DurationPinId = DurationPin->PinId;
-    ColorPinId = ColorPin->PinId;
-    PrintModePinId = PrintModePin->PinId;
-    LogSeverityPinId = LogSeverityPin->PinId;
+        PrintKey = UALS_Settings::GetConfigFromPreset(PrintPreset).Key;
+
+        KeyPin->DefaultValue = PrintKey.ToString();
+        SetDefaultValue(KeyPin);
+
+        KeyPinId = KeyPin->PinId;
+    }
+
+    if (!PrintModePinId.IsValid())
+    {
+        UEdGraphPin* PrintModePin = CreatePin(EGPD_Input, UEdGraphSchema_K2::PC_Byte, StaticEnum<EPrintMode>(), TEXT("PrintMode"));
+        PrintModePin->PinFriendlyName = FText::FromString("PrintMode\t\t\t\t");
+        PrintModePin->bAdvancedView = true;
+        PrintModePin->bHidden = true;
+        PrintModePin->PinToolTip = FString("Choose how the message is output: on screen, log or both.");
+
+        PrintMode = UALS_Settings::GetConfigFromPreset(PrintPreset).PrintMode;
+
+        PrintModePin->DefaultValue = UEnum::GetValueAsString(PrintMode);
+        SetDefaultValue(PrintModePin);
+
+        PrintModePinId = PrintModePin->PinId;
+    }
+
+    if (!LogSeverityPinId.IsValid())
+    {
+        UEdGraphPin* LogSeverityPin = CreatePin(EGPD_Input, UEdGraphSchema_K2::PC_Byte, StaticEnum<ELogSeverity>(), TEXT("LogSeverity"));
+        LogSeverityPin->PinFriendlyName = FText::FromString("LogSeverity\t\t\t\t");
+        LogSeverityPin->bAdvancedView = true;
+        LogSeverityPin->bHidden = true;
+        LogSeverityPin->PinToolTip = FString("Set the severity level to Info, Warning or Error.");
+
+        LogSeverity = UALS_Settings::GetConfigFromPreset(PrintPreset).LogSeverity;
+
+        LogSeverityPin->DefaultValue = UEnum::GetValueAsString(LogSeverity);
+        SetDefaultValue(LogSeverityPin);
+
+        LogSeverityPinId = LogSeverityPin->PinId;
+    }
 
     AdvancedPins.AddUnique(DurationPinId);
     AdvancedPins.AddUnique(ColorPinId);
+    AdvancedPins.AddUnique(KeyPinId);
     AdvancedPins.AddUnique(PrintModePinId);
     AdvancedPins.AddUnique(LogSeverityPinId);
 }
@@ -267,16 +317,7 @@ void UALS_Node::PostLoad()
 
     if (CurrentVersion != UpgradedVersion)
     {
-        UBlueprint* BP = GetBlueprint();
-        if (!BP) return;
-
         UpgradeNode(CurrentVersion);
-
-        UE_LOG(LogTemp, Warning, TEXT("PrintString (ALS) Upgraded version from %d → %d. Please Compile and Save %s."),
-            CurrentVersion, UpgradedVersion, *BP->GetName());
-
-        CurrentVersion = UpgradedVersion;
-        MarkBlueprintDirty(true);   
     }
 }
 
@@ -284,7 +325,7 @@ void UALS_Node::UpgradeNode(int32 OldVersion)
 {
     if (OldVersion == 0)
     {
-
+		// Upgrade logic from version 0 to 1
     }
 }
 
@@ -330,6 +371,21 @@ void UALS_Node::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEve
         if (UEdGraphPin* Pin = FindPinById(ColorPinId))
         {
             Pin->DefaultValue = PrintColor.ToString();
+            SetDefaultValue(Pin);
+
+            ALSNotifyNode(GetGraph(), this);
+        }
+    }
+
+    if (PropertyName == GET_MEMBER_NAME_CHECKED(UALS_Node, PrintKey))
+    {
+        const FScopedTransaction Transaction(NSLOCTEXT("ALS", "UndoText", "Key"));
+        Modify();
+        GetGraph()->Modify();
+
+        if (UEdGraphPin* Pin = FindPinById(KeyPinId))
+        {
+            Pin->DefaultValue = PrintKey.ToString();
             SetDefaultValue(Pin);
 
             ALSNotifyNode(GetGraph(), this);
@@ -765,6 +821,7 @@ void UALS_Node::ExpandNode(FKismetCompilerContext& CompilerContext, UEdGraph* So
 
             UEdGraphPin* PH_ContextPin = PrintHelperNode->FindPinChecked(TEXT("WorldContextObject"));
             UEdGraphPin* PH_ColorPin = PrintHelperNode->FindPinChecked(TEXT("Color"));
+            UEdGraphPin* PH_KeyPin = PrintHelperNode->FindPinChecked(TEXT("Key"));
             UEdGraphPin* PH_DurationPin = PrintHelperNode->FindPinChecked(TEXT("Duration"));
             UEdGraphPin* PH_PrintModePin = PrintHelperNode->FindPinChecked(TEXT("PrintMode"));
             UEdGraphPin* PH_LogSeverityPin = PrintHelperNode->FindPinChecked(TEXT("LogSeverity"));
@@ -775,33 +832,74 @@ void UALS_Node::ExpandNode(FKismetCompilerContext& CompilerContext, UEdGraph* So
 
             UEdGraphPin* MyContextPin = FindPinById(WorldContextId);
             UEdGraphPin* MyColorPin = FindPinById(ColorPinId);
+            UEdGraphPin* MyKeyPin = FindPinById(KeyPinId);
             UEdGraphPin* MyDurationPin = FindPinById(DurationPinId);
             UEdGraphPin* MyPrintModePin = FindPinById(PrintModePinId);
             UEdGraphPin* MyLogSeverityPin = FindPinById(LogSeverityPinId);
             UEdGraphPin* MyTextLocPin = FindPinById(TextLocationPinId);
 
-            if (MyContextPin->HasAnyConnections())
-                CompilerContext.CopyPinLinksToIntermediate(*MyContextPin, *PH_ContextPin);
+			// Context Pin
+            if (MyContextPin)
+            {
+                if (MyContextPin->HasAnyConnections()) CompilerContext.CopyPinLinksToIntermediate(*MyContextPin, *PH_ContextPin);
+            }
 
-            if (MyColorPin->HasAnyConnections())
-                CompilerContext.CopyPinLinksToIntermediate(*MyColorPin, *PH_ColorPin);
+			// Color Pin
+            if (MyColorPin)
+            {
+                if (MyColorPin->HasAnyConnections()) CompilerContext.CopyPinLinksToIntermediate(*MyColorPin, *PH_ColorPin);
+                else PH_ColorPin->DefaultValue = GetSavedDefaultValue(MyColorPin);
+            }
             else
-                PH_ColorPin->DefaultValue = GetSavedDefaultValue(MyColorPin);
+            {
+				PH_ColorPin->DefaultValue = PrintColor.ToString();
+            }
 
-            if (MyDurationPin->HasAnyConnections())
-                CompilerContext.CopyPinLinksToIntermediate(*MyDurationPin, *PH_DurationPin);
+			// Key Pin
+            if (MyKeyPin)
+            {
+                if (MyKeyPin->HasAnyConnections()) CompilerContext.CopyPinLinksToIntermediate(*MyKeyPin, *PH_KeyPin);
+                else PH_KeyPin->DefaultValue = GetSavedDefaultValue(MyKeyPin);
+            }
             else
-                PH_DurationPin->DefaultValue = GetSavedDefaultValue(MyDurationPin);
+            {
+				PH_KeyPin->DefaultValue = PrintKey.ToString();
+            }
 
-            if (MyPrintModePin->HasAnyConnections())
-                CompilerContext.CopyPinLinksToIntermediate(*MyPrintModePin, *PH_PrintModePin);
+			// Duration Pin
+            if (MyDurationPin)
+            {
+                if (MyDurationPin->HasAnyConnections()) CompilerContext.CopyPinLinksToIntermediate(*MyDurationPin, *PH_DurationPin);
+                else PH_DurationPin->DefaultValue = GetSavedDefaultValue(MyDurationPin);
+            }
             else
-                PH_PrintModePin->DefaultValue = GetSavedDefaultValue(MyPrintModePin);
+            {
+				PH_DurationPin->DefaultValue = FString::SanitizeFloat(PrintDuration);
+            }
 
-            if (MyLogSeverityPin->HasAnyConnections())
-                CompilerContext.CopyPinLinksToIntermediate(*MyLogSeverityPin, *PH_LogSeverityPin);
+			// PrintMode Pin
+            if (MyPrintModePin)
+            {
+                if (MyPrintModePin->HasAnyConnections()) CompilerContext.CopyPinLinksToIntermediate(*MyPrintModePin, *PH_PrintModePin);
+                else PH_PrintModePin->DefaultValue = GetSavedDefaultValue(MyPrintModePin);
+            }
             else
-                PH_LogSeverityPin->DefaultValue = GetSavedDefaultValue(MyLogSeverityPin);
+            {
+                UEnum* Enum = StaticEnum<EPrintMode>();
+				PH_PrintModePin->DefaultValue = Enum->GetValueAsString(PrintMode);
+            }
+
+			// LogSeverity Pin
+            if (MyLogSeverityPin)
+            {
+                if (MyLogSeverityPin->HasAnyConnections()) CompilerContext.CopyPinLinksToIntermediate(*MyLogSeverityPin, *PH_LogSeverityPin);
+                else PH_LogSeverityPin->DefaultValue = GetSavedDefaultValue(MyLogSeverityPin);
+            }
+            else
+            {
+                UEnum* Enum = StaticEnum<ELogSeverity>();
+                PH_LogSeverityPin->DefaultValue = Enum->GetValueAsString(LogSeverity);
+            }
 
             PH_DrawDebugPin->DefaultValue = bPrintToWorld ? "true" : "false";
 

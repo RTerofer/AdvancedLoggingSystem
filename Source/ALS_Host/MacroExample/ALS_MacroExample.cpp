@@ -23,25 +23,20 @@ void AALS_MacroExample::Tick(float DeltaTime)
 
 void AALS_MacroExample::MacroCustomExample()
 {
-	// Custom Config
-	FPrintConfig MyConfig = FPrintConfig(
-		FColor::Blue,          // Color
-		4.0f,                  // Duration
-		ELogSeverity::Info,    // Severity
-		EPrintMode::ScreenOnly // Print Mode
-	);
+	// DEFINE CONFIG - (Key, Duration, Color, LogSeverity, PrintMode)
+	FPrintConfig MyPrintConfig(NAME_None, 4.0f, FColor::Blue, ELogSeverity::Info, EPrintMode::ScreenOnly);
 
-	// Config + Message
-	PrintCustom(MyConfig, "Print With Custom Config");
+	// USE CUSTOM CONFIG - (PrintConfig, Args...)
+	PrintCustom(MyPrintConfig, "Hello World");
 
-	// Color + Duration + Message. [Use in Static Functions]
-	JustPrint(FColor::Yellow, 2.0f, "Just Print");
+	// USE EXISTING PRESET - (Preset, Args...)
+	PrintPreset(EPrintPreset::PrintInfo, "Hello World");
 
-	// LogSeverity + Message. [Use in Static Functions]
-	JustLog(ELogSeverity::Warning, "Just Log");
+	// USE IN STATIC FUNCTION FOR PRINT AND LOG - (Key, Duration, Color, Args...)
+	JustPrint(NAME_None, 2.0f, FColor::Yellow, "Hello World");
 
-	// Preset + Context + Message 
-	PrintWithCtx(EPrintPreset::PrintInfo, this, "Print With Preset & Context");
+	// USE IN STATIC FUNCTION FOR LOG - (LogSeverity, Args...)
+	JustLog(ELogSeverity::Warning, "Hello World");
 }
 
 
@@ -92,13 +87,13 @@ void AALS_MacroExample::MacroSomeExample()
 	TWeakObjectPtr<AActor> WeakObj = HitActor;
 
 
-	// Print Info - (Args...)
+	// Print and Log Info - (Args...)
 	PrintInfo("Location:", GetActorLocation());
 
-	// Print Warn - (Args...)
+	// Print and Log Warn - (Args...)
 	PrintWarn("Consumable is added to inventory: ", EConsumables::Banana);
 
-	//Print Error - (Args...)
+	//Print and Log Error - (Args...)
 	PrintError("Error: WeakObjPtr is not valid", WeakObj);
 
 	// Log Info - (Args...)
@@ -110,7 +105,7 @@ void AALS_MacroExample::MacroSomeExample()
 	// Log Error  - (Args...)
 	LogError((MyConsumableMap.Find(EConsumables::Apple) ? "Found" : "NotFound"));
 
-	// Print To World - (Location, Args...)
+	// Print To World and Log - (Location, Args...)
 	Print3D(GetActorLocation(), "PlayerName: ", OverlappedActor);
 
 }

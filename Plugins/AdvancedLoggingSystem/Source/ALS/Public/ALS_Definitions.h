@@ -56,6 +56,10 @@ struct FPrintConfig
     UPROPERTY(EditDefaultsOnly, meta = (DisplayName = "Duration", Category = "ALS Config"))
     float Duration;
 
+    // Duration (in seconds) the message will remain visible on screen
+    UPROPERTY(EditDefaultsOnly, meta = (DisplayName = "Key", Category = "ALS Config"))
+    FName Key;
+
     // The log level: Info, Warning, or Error
     UPROPERTY(EditDefaultsOnly, meta = (DisplayName = "Log Level", Category = "ALS Config"))
     ELogSeverity LogSeverity;
@@ -63,27 +67,20 @@ struct FPrintConfig
     // Print output type: screen only, log only, or both
     UPROPERTY(EditDefaultsOnly, meta = (DisplayName = "Print Mode", Category = "ALS Config"))
     EPrintMode PrintMode;
-
-    FPrintConfig()
-    {
-        Color = FColor::Magenta;
-        Duration = 5.0f;
-        LogSeverity = ELogSeverity::Info;
-        PrintMode = EPrintMode::ScreenAndLog;
-    }
-
+ 
     FPrintConfig(
-        FColor InColor,
-        float InDuration,
-        ELogSeverity InLogSeverity,
-        EPrintMode InPrintMode
-    )
-    {
-        Color = InColor;
-        Duration = InDuration;
-        LogSeverity = InLogSeverity;
-        PrintMode = InPrintMode;
-    }
+        FName InKey = NAME_None,
+        float InDuration = 5.0f,
+        FColor InColor = FColor::Green,
+        ELogSeverity InLogSeverity = ELogSeverity::Info, 
+        EPrintMode InPrintMode = EPrintMode::ScreenAndLog
+    ) 
+        : Color(InColor)
+        , Duration(InDuration)
+        , Key(InKey)
+        , LogSeverity(InLogSeverity)
+        , PrintMode(InPrintMode) 
+    {}
 };
 
 USTRUCT(BlueprintType, meta = (Category = "AdvancedLoggingSystem"))
@@ -162,17 +159,15 @@ struct FContextEntries
     UPROPERTY(BlueprintReadOnly, Category = "ALS ContextEntries")
     FText NetworkText;
 
-    FContextEntries()
-    {
-        ContextRaw = "";
-        ContextText = FText::FromString("");
-        NetworkText = FText::FromString("");
-    }
+    FContextEntries() 
+        : ContextRaw(TEXT(""))
+        , ContextText(FText::GetEmpty())
+        , NetworkText(FText::GetEmpty())
+	{}
 
-    FContextEntries(FString InContextRaw, FText InContextText, FText InNetwork)
-    {
-        ContextRaw = InContextRaw;
-        ContextText = InContextText;
-        NetworkText = InNetwork;
-    }
+    FContextEntries(FString InContextRaw, FText InContextText, FText InNetwork) 
+        : ContextRaw(InContextRaw)
+        , ContextText(InContextText)
+        , NetworkText(InNetwork)
+	{}
 };

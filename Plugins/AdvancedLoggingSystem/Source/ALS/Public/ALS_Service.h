@@ -19,6 +19,8 @@ protected:
     virtual void TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override;
     virtual FString GetStaticDescription() const override;
 
+    virtual void InitializeFromAsset(UBehaviorTree& Asset) override;
+
     virtual void OnGameplayTaskActivated(UGameplayTask& Task) override {};
     virtual void OnGameplayTaskDeactivated(UGameplayTask& Task) override {};
 
@@ -38,6 +40,10 @@ public:
     // Print Text Color
     UPROPERTY(EditAnywhere, Category = "Print Service")
     FColor TextColor = FColor::Green;
+
+    // Print Key
+    UPROPERTY(EditAnywhere, Category = "Print Service")
+    FName Key = TEXT("-1");
 
     // Log Severity
     UPROPERTY(EditAnywhere, Category = "Print Service")

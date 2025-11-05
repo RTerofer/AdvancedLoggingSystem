@@ -9,10 +9,24 @@
 
 UALS_Task::UALS_Task()
 {
-    NodeName = "Print (ALS)"; 
+    NodeName = "Print (ALS)";
+
+    INIT_TASK_NODE_NOTIFY_FLAGS();
+
     TextLocation.AddObjectFilter(this, GET_MEMBER_NAME_CHECKED(UALS_Task, TextLocation), AActor::StaticClass());
     TextLocation.AddObjectFilter(this, GET_MEMBER_NAME_CHECKED(UALS_Task, TextLocation), USceneComponent::StaticClass());
     TextLocation.AddVectorFilter(this, GET_MEMBER_NAME_CHECKED(UALS_Task, TextLocation));
+}
+
+void UALS_Task::InitializeFromAsset(UBehaviorTree& Asset)
+{
+    Super::InitializeFromAsset(Asset);
+
+    if (UBlackboardData* BBAsset = GetBlackboardAsset())
+    {
+        PrintBBKey.ResolveSelectedKey(*BBAsset);
+        TextLocation.ResolveSelectedKey(*BBAsset);
+    }
 }
 
 EBTNodeResult::Type UALS_Task::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
@@ -52,7 +66,7 @@ EBTNodeResult::Type UALS_Task::ExecuteTask(UBehaviorTreeComponent& OwnerComp, ui
     AAIController* AICon = OwnerComp.GetAIOwner();
     AActor* Context = AICon ? Cast<AActor>(AICon->GetPawn()) : nullptr;
     FString SourceID = FString::Printf(TEXT("BT%s::%d"), *BlackboardComp->GetName(), this->GetUniqueID());
-    FPrintConfig PrintConfig = FPrintConfig(TextColor, TextDuration, LogSeverity, EPrintMode::ScreenAndLog);
+    FPrintConfig PrintConfig = FPrintConfig(Key, TextDuration, TextColor, LogSeverity, EPrintMode::ScreenAndLog);
 
     bool InitiateFileLog = false;
     if (Message != PrevMessage || !UALS_Settings::Get()->LogUniqueMsgsForBT)
