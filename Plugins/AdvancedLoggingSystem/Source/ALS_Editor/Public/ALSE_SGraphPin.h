@@ -10,21 +10,13 @@
 struct FOutputModeItem
 {
     EPrintMode Mode;
-
-    FOutputModeItem(EPrintMode InMode)
-    {
-        Mode = InMode;
-    }
+    FOutputModeItem(EPrintMode InMode) : Mode (InMode) {}
 };
 
 struct FLogSeverityItem
 {
     ELogSeverity Mode;
-
-    FLogSeverityItem(ELogSeverity InMode)
-    {
-        Mode = InMode;
-    }
+    FLogSeverityItem(ELogSeverity InMode) : Mode(InMode) {}
 };
 
 class ALS_EDITOR_API UALS_SGraphPin : public SGraphPin

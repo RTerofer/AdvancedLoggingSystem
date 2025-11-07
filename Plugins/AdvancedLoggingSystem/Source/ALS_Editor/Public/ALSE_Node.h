@@ -83,7 +83,7 @@ protected:
     virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
     virtual void PrepareForCopying() override;
     virtual void PostPasteNode() override;
-    virtual bool IsNodeSafeToIgnore() const override;
+    virtual bool IsInDevelopmentMode() const override { return true; }
     virtual void ExpandNode(FKismetCompilerContext& CompilerContext, UEdGraph* SourceGraph) override;
     virtual void GetMenuActions(FBlueprintActionDatabaseRegistrar& ActionRegistrar) const override;
     virtual TSharedPtr<SGraphNode> CreateVisualWidget() override;

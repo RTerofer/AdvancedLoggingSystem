@@ -634,7 +634,7 @@ TSharedRef<SWidget> UALS_SGraphPin::GetDefaultValueWidget()
                 EditableTextBox
             ];
 
-        if (!SavedDefault.IsEmpty())
+        if (FName(SavedDefault) != NAME_None)
         {
             HorizontalBox->AddSlot()
                 .AutoWidth()

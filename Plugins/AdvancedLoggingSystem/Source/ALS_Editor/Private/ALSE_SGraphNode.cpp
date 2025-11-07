@@ -189,14 +189,14 @@ void UALS_SGraphNode::CreateInputSideAddButton(TSharedPtr<SVerticalBox> InputBox
                 ]
         ];
 
-        InputBox->AddSlot()
-            .AutoHeight()
-            .HAlign(HAlign_Fill)
-            .VAlign(VAlign_Top)
-            .Padding(10, 2, -10, 2)
-            [
-                FirstButtonBox
-            ];
+    InputBox->AddSlot()
+        .AutoHeight()
+        .HAlign(HAlign_Fill)
+        .VAlign(VAlign_Top)
+        .Padding(10, 2, -10, 5)
+        [
+            FirstButtonBox
+        ];
 }
 
 #if ENGINE_MAJOR_VERSION == 5 && ENGINE_MINOR_VERSION > 3
@@ -358,7 +358,7 @@ TSharedRef<SWidget> UALS_SGraphNode::CreateTitleWidget(TSharedPtr<SNodeTitle> No
     }
 
     FSlateFontInfo HeadingFont = FAppStyle::Get().GetFontStyle("NormalFontBold");
-    HeadingFont.Size = 11;
+    HeadingFont.Size = 10;
 
     FSlateFontInfo SubHeadingFont = FAppStyle::Get().GetFontStyle("NormalFont");
     SubHeadingFont.Size = 6;

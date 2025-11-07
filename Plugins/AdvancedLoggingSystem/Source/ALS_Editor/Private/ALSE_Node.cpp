@@ -1400,7 +1400,11 @@ FText UALS_Node::GetMenuCategory() const
 
 FText UALS_Node::GetKeywords() const
 {
-    return FText::FromString("Pr Pri Print");
+    TArray<FString> Keywords;
+    Keywords.Add(TEXT("Print"));
+    Keywords.Add(TEXT("String"));
+
+    return FText::FromString(FString::Join(Keywords, TEXT(" ")));
 }
 
 FLinearColor UALS_Node::GetNodeTitleColor() const

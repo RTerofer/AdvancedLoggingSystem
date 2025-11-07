@@ -9,11 +9,7 @@
 struct FPresetItem
 {
     EPrintPreset Mode;
-
-    FPresetItem(EPrintPreset InMode)
-    {
-        Mode = InMode;
-    }
+    FPresetItem(EPrintPreset InMode) : Mode(InMode) {}
 };
 
 

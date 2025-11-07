@@ -54,6 +54,8 @@
 
 #define PrintCustom(PrintConfig, ...) UALS_Globals::PrintALSCPP(PrintConfig, this, SOURCE_ID, __VA_ARGS__)
 
+#define LogCustom(PrintConfig, ...) UALS_Globals::PrintALSCPP(PrintConfig, this, SOURCE_ID, __VA_ARGS__)
+
 #define Print3DCustom(PrintConfig, Location, ...) UALS_Globals::DrawALSCPP(PrintConfig, this, SOURCE_ID, Location, __VA_ARGS__)
 
 #define PrintPreset(Preset, ...)  UALS_Globals::PrintALSCPP(GETCONFIG(Preset), this, SOURCE_ID, __VA_ARGS__)
