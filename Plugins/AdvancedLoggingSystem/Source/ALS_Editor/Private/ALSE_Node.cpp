@@ -26,6 +26,7 @@ static int32 UpgradedVersion = 1;
 UALS_Node::UALS_Node()
 {
     bCanRenameNode = false;
+	SetEnabledState(ENodeEnabledState::DevelopmentOnly);
 }
 
 void UALS_Node::BeginDestroy()
@@ -319,31 +320,37 @@ void UALS_Node::PostEditUndo()
     Super::PostEditUndo();
 }
 
-void UALS_Node::UpgradeNode(int32 OldVersion)
+void UALS_Node::UpgradeNode()
 {
-    if (OldVersion == 0)
+    if (CurrentVersion == UpgradedVersion) return;
+
+	int32 OldVersion = CurrentVersion;
+
+    while (CurrentVersion < UpgradedVersion)
     {
-		// Create Missing Key Pin
-		CreateAdvancedPins();
-		SaveCurrentPins();
-
-        CurrentVersion = UpgradedVersion;
-
-        if (UBlueprint* BP = GetBlueprint())
+        switch (CurrentVersion)
         {
-            FBlueprintEditorUtils::MarkBlueprintAsStructurallyModified(BP);
-            ALSNotifyNode(GetGraph(), this);
+            // Added Key Pin
+            case 0: 
+                CreateAdvancedPins();
+                SaveCurrentPins();
+                break;
 
-			if (!BP->GetName().Contains(TEXT("PROTO")))
-            {
-                UE_LOG(LogALS, Display, TEXT("Upgraded ALS Print Node to Version %d. Please Compile and Save %s"), CurrentVersion, *BP->GetName());
-            }  
+            // TODO: Future Upgrades
+            case 1:
+                break;
         }
+
+        CurrentVersion++;
     }
 
-    if (OldVersion == 1)
+    if (UBlueprint* BP = GetBlueprint())
     {
-		// TODO: Future Upgrades
+        FBlueprintEditorUtils::MarkBlueprintAsStructurallyModified(BP);
+        ALSNotifyNode(GetGraph(), this);
+
+        if (BP->GetName().Contains(TEXT("PROTO"))) return;
+        UE_LOG(LogALS, Display, TEXT("Upgraded ALS Print Node From Version %d -> Version %d. Please Compile and Save %s"), OldVersion, CurrentVersion, *BP->GetName());
     }
 }
 
@@ -502,11 +509,6 @@ void UALS_Node::ReconstructNode()
     Super::ReconstructNode();
 }
 
-bool UALS_Node::IsNodeSafeToIgnore() const
-{
-    return true;
-}
-
 void UALS_Node::SaveCurrentPins()
 {
     auto SavePin = [&](UEdGraphPin* Pin)
@@ -612,11 +614,7 @@ void UALS_Node::ReallocatePinsDuringReconstruction(TArray<UEdGraphPin*>& OldPins
         }
     }
 
-	// Upgrade
-    if(CurrentVersion != UpgradedVersion)
-    {
-        UpgradeNode(CurrentVersion);
-	}
+    UpgradeNode();
 }
 
 void UALS_Node::HandleGraphChanged(const FEdGraphEditAction& Action)

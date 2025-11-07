@@ -63,6 +63,7 @@ class ALS_EDITOR_API UALS_Node : public UK2Node
 
 protected:
     UALS_Node();
+
     virtual void BeginDestroy() override;
     virtual FText GetMenuCategory() const override;
     virtual FText GetKeywords() const override;
@@ -134,7 +135,7 @@ public:
     bool IsNonContextBP() const;
 
 private:
-    void UpgradeNode(int32 OldVersion);
+    void UpgradeNode();
 
 private:
 

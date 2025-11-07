@@ -11,7 +11,7 @@
 #include "ALS_Definitions.h"
 #include "ALS_Settings.generated.h"
 
-UCLASS(Config = Game, defaultconfig, meta = (DisplayName = "AdvancedLoggingSystem"))
+UCLASS(Config = Game, defaultconfig, meta = (DisplayName = "Advanced Logging System"))
 class ALS_API UALS_Settings : public UDeveloperSettings
 {
     GENERATED_BODY()
@@ -184,7 +184,7 @@ public:
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
     // Title color when node is active
-    UPROPERTY(Config, EditDefaultsOnly, Category = "NODE COLORS", meta = (DisplayName = "Active Title Color"))
+    UPROPERTY(Config, EditDefaultsOnly, Category = "NODE COLORS", meta = (DisplayName = "Inactive Title Color"))
     FLinearColor NodeInactiveTitleColor = FLinearColor::Gray;
 
     // Body color when node is active
