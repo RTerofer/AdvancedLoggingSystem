@@ -183,25 +183,9 @@ public:
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-        // Node title color when log level is Info
-    UPROPERTY(Config, EditDefaultsOnly, Category = "NODE COLORS", meta = (DisplayName = "Info Title Color"))
-    FLinearColor NodeInfoColor = FLinearColor::Green;
-
-    // Node title color when log level is Warning
-    UPROPERTY(Config, EditDefaultsOnly, Category = "NODE COLORS", meta = (DisplayName = "Warning Title Color"))
-    FLinearColor NodeWarningColor = FLinearColor::Yellow;
-
-    // Node title color when log level is Error
-    UPROPERTY(Config, EditDefaultsOnly, Category = "NODE COLORS", meta = (DisplayName = "Error Title Color"))
-    FLinearColor NodeErrorColor = FLinearColor::Red;
-
-    // Node title color when 3D debug is active
-    UPROPERTY(Config, EditDefaultsOnly, Category = "NODE COLORS", meta = (DisplayName = "3D Title Color"))
-    FLinearColor Node3DColor = FLinearColor(0.8, 0.25, 0.0, 1.0);
-
     // Title color when node is active
     UPROPERTY(Config, EditDefaultsOnly, Category = "NODE COLORS", meta = (DisplayName = "Active Title Color"))
-    FLinearColor NodeActiveTitleColor = FLinearColor::Gray;
+    FLinearColor NodeInactiveTitleColor = FLinearColor::Gray;
 
     // Body color when node is active
     UPROPERTY(Config, EditDefaultsOnly, Category = "NODE COLORS", meta = (DisplayName = "Active Body Color"))
@@ -209,7 +193,7 @@ public:
 
     // Body color when node is inactive
     UPROPERTY(Config, EditDefaultsOnly, Category = "NODE COLORS", meta = (DisplayName = "Inactive Body Color"))
-    FLinearColor NodeInActiveBodyColor = FLinearColor::White;
+    FLinearColor NodeInactiveBodyColor = FLinearColor::White;
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 

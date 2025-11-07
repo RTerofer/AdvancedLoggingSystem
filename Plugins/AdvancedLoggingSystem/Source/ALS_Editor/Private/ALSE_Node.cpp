@@ -21,7 +21,7 @@
 #include "K2Node_MakeArray.h"
 #include "FileHelpers.h"
 
-static int32 UpgradedVersion = 0;
+static int32 UpgradedVersion = 1;
 
 UALS_Node::UALS_Node()
 {
@@ -44,11 +44,11 @@ void UALS_Node::MarkBlueprintDirty(bool NotifyNode)
     {
         Blueprint->Modify();
         FBlueprintEditorUtils::MarkBlueprintAsModified(Blueprint);
+    }
 
-        if (NotifyNode)
-        {
-            ALSNotifyNode(GetGraph(), this);
-        }
+    if (NotifyNode)
+    {
+        ALSNotifyNode(GetGraph(), this);
     }
 }
 
@@ -69,26 +69,19 @@ void UALS_Node::AllocateDefaultPins()
 
 void UALS_Node::CreateDefaultPins()
 {
-    if (!DurationPinId.IsValid())
-    {
-        ExecPinId = CreateExecPin()->PinId;
-    }
+	// Default Execution Pin
+    if (!DurationPinId.IsValid()) ExecPinId = CreateExecPin()->PinId;
+   
+	// World Context Pin
+    if (!WorldContextId.IsValid()) WorldContextId = CreateWorldContextPin()->PinId;
+
+	// Text Location Pin
+    if (!TextLocationPinId.IsValid()) TextLocationPinId = CreateTextLocationPin()->PinId;
+
+	// Wildcard Pin - "Hello World"
+    if (!WildcardPinId.IsValid()) WildcardPinId = CreateWildcardPin()->PinId;
     
-    if (!WorldContextId.IsValid())
-    {
-        WorldContextId = CreateWorldContextPin()->PinId;
-    }
-
-    if (!TextLocationPinId.IsValid())
-    {
-        TextLocationPinId = CreateTextLocationPin()->PinId;
-    }
-
-    if (!WildcardPinId.IsValid())
-    {
-        WildcardPinId = CreateWildcardPin()->PinId;
-    }
-
+	// Create Advanced Pins
     CreateAdvancedPins();
 }
 
@@ -314,19 +307,6 @@ void UALS_Node::Serialize(FArchive& Ar)
 void UALS_Node::PostLoad()
 {
     Super::PostLoad();
-
-    if (CurrentVersion != UpgradedVersion)
-    {
-        UpgradeNode(CurrentVersion);
-    }
-}
-
-void UALS_Node::UpgradeNode(int32 OldVersion)
-{
-    if (OldVersion == 0)
-    {
-		// Upgrade logic from version 0 to 1
-    }
 }
 
 void UALS_Node::PostEditImport()
@@ -337,6 +317,34 @@ void UALS_Node::PostEditImport()
 void UALS_Node::PostEditUndo()
 {
     Super::PostEditUndo();
+}
+
+void UALS_Node::UpgradeNode(int32 OldVersion)
+{
+    if (OldVersion == 0)
+    {
+		// Create Missing Key Pin
+		CreateAdvancedPins();
+		SaveCurrentPins();
+
+        CurrentVersion = UpgradedVersion;
+
+        if (UBlueprint* BP = GetBlueprint())
+        {
+            FBlueprintEditorUtils::MarkBlueprintAsStructurallyModified(BP);
+            ALSNotifyNode(GetGraph(), this);
+
+			if (!BP->GetName().Contains(TEXT("PROTO")))
+            {
+                UE_LOG(LogALS, Display, TEXT("Upgraded ALS Print Node to Version %d. Please Compile and Save %s"), CurrentVersion, *BP->GetName());
+            }  
+        }
+    }
+
+    if (OldVersion == 1)
+    {
+		// TODO: Future Upgrades
+    }
 }
 
 void UALS_Node::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
@@ -603,6 +611,12 @@ void UALS_Node::ReallocatePinsDuringReconstruction(TArray<UEdGraphPin*>& OldPins
             AdvancedPin->DefaultValue = GetSavedDefaultValue(AdvancedPin);
         }
     }
+
+	// Upgrade
+    if(CurrentVersion != UpgradedVersion)
+    {
+        UpgradeNode(CurrentVersion);
+	}
 }
 
 void UALS_Node::HandleGraphChanged(const FEdGraphEditAction& Action)
@@ -1322,6 +1336,7 @@ void UALS_Node::SetPinDefaultsByPreset()
 {
     FPrintConfig CurrentConfig = UALS_Settings::GetConfigFromPreset(PrintPreset);
     PrintColor = CurrentConfig.Color;
+    PrintKey = CurrentConfig.Key;
     PrintDuration = CurrentConfig.Duration;
     LogSeverity = CurrentConfig.LogSeverity;
     PrintMode = CurrentConfig.PrintMode;
@@ -1335,6 +1350,12 @@ void UALS_Node::SetPinDefaultsByPreset()
     if (UEdGraphPin* Pin = FindPinById(ColorPinId))
     {
         Pin->DefaultValue = PrintColor.ToString();
+        SetDefaultValue(Pin);
+    }
+
+    if (UEdGraphPin* Pin = FindPinById(KeyPinId))
+    {
+        Pin->DefaultValue = PrintKey.ToString();
         SetDefaultValue(Pin);
     }
 
@@ -1386,37 +1407,12 @@ FText UALS_Node::GetKeywords() const
 
 FLinearColor UALS_Node::GetNodeTitleColor() const
 {
-    if (bToggleNode)
-    {
-        if (bPrintToWorld)
-        {
-            return UALS_Settings::Get()->Node3DColor;
-        }
-
-        if (LogSeverity == ELogSeverity::Warning)
-        {
-            return UALS_Settings::Get()->NodeWarningColor;
-        }
-
-        if (LogSeverity == ELogSeverity::Error)
-        {
-            return UALS_Settings::Get()->NodeErrorColor;
-        }
-
-        return UALS_Settings::Get()->NodeInfoColor;
-    }
-
-    return UALS_Settings::Get()->NodeActiveTitleColor;
+    return bToggleNode ? PrintColor : UALS_Settings::Get()->NodeInactiveTitleColor;
 }
 
 FLinearColor UALS_Node::GetNodeBodyTintColor() const
 {
-    if (bToggleNode)
-    {
-        return UALS_Settings::Get()->NodeActiveBodyColor;
-    }
-
-    return UALS_Settings::Get()->NodeInActiveBodyColor;
+    return bToggleNode ? UALS_Settings::Get()->NodeActiveBodyColor : UALS_Settings::Get()->NodeInactiveBodyColor;
 }
 
 FSlateIcon UALS_Node::GetIconAndTint(FLinearColor& OutColor) const
