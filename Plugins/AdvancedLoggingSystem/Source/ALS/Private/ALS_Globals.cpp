@@ -551,12 +551,12 @@ void UALS_Globals::DrawALS(
     if (!World && GEngine)
     {
         World = GEngine->GetCurrentPlayWorld();
-        UE_LOG(LogTemp, Warning, TEXT("PrintDraw: No valid world found from Context. Tried to use CurrentPlayWorld."));
+        UE_LOG(LogALS, Warning, TEXT("PrintDraw: No valid world found from Context. Tried to use CurrentPlayWorld."));
     }   
 
     if (!World)
     {
-        UE_LOG(LogTemp, Error, TEXT("PrintDraw: No valid world found. Skipping debug draw."));
+        UE_LOG(LogALS, Error, TEXT("PrintDraw: No valid world found. Skipping debug draw."));
         return;
     }
 

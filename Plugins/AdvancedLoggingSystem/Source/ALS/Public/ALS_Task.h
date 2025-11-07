@@ -49,7 +49,7 @@ public:
     float TextDuration = 2.0f;
 
     // Print Key
-    UPROPERTY(EditAnywhere, Category = "Print Service")
+    UPROPERTY(EditAnywhere, Category = "Print Task")
     FName Key = TEXT("-1");
 
     // Log Severity

@@ -6,6 +6,8 @@
 #include "UObject/ObjectMacros.h"
 #include "ALS_Definitions.generated.h"
 
+inline FLogCategory<ELogVerbosity::Log, ELogVerbosity::All> LogALS(TEXT("LogALS"));
+
 UENUM(BlueprintType, meta = (Category = "AdvancedLoggingSystem"))
 enum class ELogSeverity : uint8
 {

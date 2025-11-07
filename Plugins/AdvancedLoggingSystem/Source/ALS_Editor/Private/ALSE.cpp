@@ -1337,14 +1337,14 @@ void FALSEditorModule::ShowAllALSLogs()
     UClass* WidgetClass = UALS_Settings::Get()->LogViewerWidget.LoadSynchronous();
     if (!WidgetClass)
     {
-        UE_LOG(LogTemp, Error, TEXT("Failed to load ALS_Logs!"));
+        UE_LOG(LogALS, Error, TEXT("Failed to load ALS_Logs!"));
         return;
     }
 
     UUserWidget* LogWidget = CreateWidget<UUserWidget>(GEditor->GetEditorWorldContext().World(), WidgetClass);
     if (!LogWidget)
     {
-        UE_LOG(LogTemp, Error, TEXT("Failed to create ALS_Logs Widget."));
+        UE_LOG(LogALS, Error, TEXT("Failed to create ALS_Logs Widget."));
         return;
     }
 

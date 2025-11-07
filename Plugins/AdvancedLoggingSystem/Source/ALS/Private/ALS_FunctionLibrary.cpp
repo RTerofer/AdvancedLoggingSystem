@@ -12,7 +12,6 @@
 #include "GameFramework/Actor.h"
 #include "GameFramework/Pawn.h"
 #include "Engine/GameInstance.h"
-#include "Kismet/KismetSystemLibrary.h"
 
 void UALS_FunctionLibrary::PrintHelperEmpty()
 {
@@ -169,7 +168,7 @@ FString UALS_FunctionLibrary::ProcessProperty(FFrame& Stack, TArray<EPinType>& P
 
             if (!ValueProperty || !ValuePtr)
             {
-                UE_LOG(LogTemp, Error, TEXT("Invalid Stack Address or Property"));
+                UE_LOG(LogALS, Error, TEXT("Invalid Stack Address or Property"));
                 OutValue.Appendf(TEXT("Invalid Stack Address or Property"));
                 continue;
             }
@@ -191,7 +190,7 @@ FString UALS_FunctionLibrary::ProcessProperty(FFrame& Stack, TArray<EPinType>& P
 
             if (ConnectedObject)
             {
-                OutValue.Append(UKismetSystemLibrary::GetDisplayName(ConnectedObject));
+                OutValue.Append(UALS_Globals::GetDisplayNameSafe(ConnectedObject));
             }
             else
             {
@@ -230,7 +229,7 @@ FString UALS_FunctionLibrary::ProcessProperty(FFrame& Stack, TArray<EPinType>& P
 
         default:
         {
-            UE_LOG(LogTemp, Warning, TEXT("Unknown EPinType in PrintHelper"));
+            UE_LOG(LogALS, Warning, TEXT("Unknown EPinType in PrintHelper"));
             break;
         }
         }
@@ -342,7 +341,7 @@ void UALS_FunctionLibrary::OpenLogsViewer(const UObject* WorldContextObject, APl
 
     if (!PlayerController)
     {
-        UE_LOG(LogBlueprint, Warning, TEXT("No Player Controller found. Failed to Open LogsViewer"));
+        UE_LOG(LogALS, Warning, TEXT("No Player Controller found. Failed to Open LogsViewer"));
         return;
     }
 
@@ -384,7 +383,7 @@ void UALS_FunctionLibrary::CloseLogsViewer(const UObject* WorldContextObject, AP
 
     if (!PlayerController)
     {
-        UE_LOG(LogBlueprint, Warning, TEXT("No Player Controller found. Failed to Close LogsViewer"));
+        UE_LOG(LogALS, Warning, TEXT("No Player Controller found. Failed to Close LogsViewer"));
         return;
     }
 
@@ -423,7 +422,7 @@ void UALS_FunctionLibrary::OpenPropertyInspector(const UObject* WorldContextObje
 
     if (!PlayerController)
     {
-        UE_LOG(LogBlueprint, Warning, TEXT("No Player Controller found. Failed to open PropertyInspector"));
+        UE_LOG(LogALS, Warning, TEXT("No Player Controller found. Failed to open PropertyInspector"));
         return;
     }
 
@@ -464,7 +463,7 @@ void UALS_FunctionLibrary::ClosePropertyInspector(const UObject* WorldContextObj
 
     if (!PlayerController) 
     {
-        UE_LOG(LogBlueprint, Warning, TEXT("No Player Controller found. Failed to Close PropertyInspector"));
+        UE_LOG(LogALS, Warning, TEXT("No Player Controller found. Failed to Close PropertyInspector"));
         return;
     }
 
@@ -497,7 +496,7 @@ void UALS_FunctionLibrary::ShowMouseCursor(const UObject* WorldContextObject, AP
 
     if (!PlayerController)
     {
-        UE_LOG(LogBlueprint, Warning, TEXT("No Player Controller found. Failed to Show cursor"));
+        UE_LOG(LogALS, Warning, TEXT("No Player Controller found. Failed to Show cursor"));
         return;
     }
 
@@ -522,7 +521,7 @@ void UALS_FunctionLibrary::HideMouseCursor(const UObject* WorldContextObject, AP
 
     if (!PlayerController)
     {
-        UE_LOG(LogBlueprint, Warning, TEXT("No Player Controller found. Failed to Hide cursor"));
+        UE_LOG(LogALS, Warning, TEXT("No Player Controller found. Failed to Hide cursor"));
         return;
     }
 
@@ -539,7 +538,7 @@ bool UALS_FunctionLibrary::LogMessageToFile(const UObject* WorldContextObject, c
 {
     if (!WorldContextObject)
     {
-        UE_LOG(LogTemp, Error, TEXT("No WorldContextObject Provided. File logging cannot be created."));
+        UE_LOG(LogALS, Error, TEXT("No WorldContextObject Provided. File logging cannot be created."));
         return false;
     }
 

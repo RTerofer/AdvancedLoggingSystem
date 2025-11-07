@@ -340,7 +340,7 @@ void UALS_LogsUMG::GetFilteredLogs(
     FString OutMessage;
     if (!GetFileContent(Instance, FileContent, OutMessage))
     {
-        UE_LOG(LogTemp, Error, TEXT("%s"), *OutMessage);
+        UE_LOG(LogALS, Error, TEXT("%s"), *OutMessage);
         return;
     }
 

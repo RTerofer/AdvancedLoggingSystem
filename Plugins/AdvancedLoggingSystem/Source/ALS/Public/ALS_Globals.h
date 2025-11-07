@@ -15,15 +15,12 @@
 #include "Kismet/KismetSystemLibrary.h"
 #include "Net/UnrealNetwork.h"
 
-inline FLogCategory<ELogVerbosity::Log, ELogVerbosity::All> LogALS(TEXT("LogALS"));
-
 template <typename, typename = std::void_t<>>
 struct TIsUStruct : std::false_type {};
 template <typename T>
 struct TIsUStruct<T, std::void_t<decltype(T::StaticStruct)>> : std::true_type {};
 template <typename T>
 constexpr bool TIsUStruct_V = TIsUStruct<T>::value;
-
 
 
 class ALS_API UALS_Globals
@@ -65,6 +62,11 @@ public:
         const FString& SourceID,
         bool InitiateFileLog = true
     );
+
+    static inline FString GetDisplayNameSafe(UObject* Object)
+    {
+        return IsValid(Object) ? UKismetSystemLibrary::GetDisplayName(Object) : TEXT("Null Object");
+    }
 
 //---------------------------------------------------------------------------------------------------------------------------------
 
@@ -142,8 +144,7 @@ public:
             if (const UEnum* E = StaticEnum<U>())
             {
                 int64 V = static_cast<int64>(InValue);
-                return E->GetName() + TEXT("::") +
-                    E->GetDisplayNameTextByValue(V).ToString();
+                return E->GetName() + TEXT("::") + E->GetDisplayNameTextByValue(V).ToString();
             }
 
             using Underlying = std::underlying_type_t<U>;
@@ -430,7 +431,11 @@ public:
         }
         else if constexpr (std::is_pointer_v<U> && std::is_base_of_v<UObject, std::remove_pointer_t<U>>)
         {
-            return InValue ? UKismetSystemLibrary::GetDisplayName(InValue) : TEXT("Null UObject*");
+			return GetDisplayNameSafe(InValue);
+        }
+        else if constexpr (std::is_base_of_v<UObject, std::remove_reference_t<U>>)
+        {
+            return GetDisplayNameSafe(&InValue);
         }
         else if constexpr (std::is_pointer_v<U> && std::is_arithmetic_v<std::remove_pointer_t<U>>)
         {
@@ -438,38 +443,15 @@ public:
         }
         else if constexpr (std::is_pointer_v<U>)
         {
-            if (InValue)
-            {
-                return ConvertToStringCPP(*InValue);
-            }
-            else
-            {
-                return TEXT("Null pointer");
-            }
+            return InValue ? ConvertToStringCPP(*InValue) : TEXT("Null Pointer");
         }
-        else if constexpr (bIsWeakPtr)
+        else if constexpr (bIsWeakPtr || bIsSubclass || bIsSharedPtr || bIsSharedRef || bIsUniquePtr)
         {
-            return InValue.IsValid() ? *InValue->GetName() : TEXT("Null TWeakObjectPtr");
-        }
-        else if constexpr (bIsSubclass)
-        {
-            return InValue ? *InValue->GetName() : TEXT("Null TSubclassOf");
+            return GetDisplayNameSafe(InValue.Get());
         }
         else if constexpr (bIsSoftClass)
         {
             return InValue.IsValid() ? *InValue.GetAssetName() : TEXT("Null TSoftClassPtr");
-        }
-        else if constexpr (bIsSharedPtr)
-        {
-            return (InValue.IsValid() && InValue.Get()) ? *InValue->GetName() : TEXT("Null TSharedPtr");
-        }
-        else if constexpr (bIsSharedRef)
-        {
-            return *InValue->GetName();
-        }
-        else if constexpr (bIsUniquePtr)
-        {
-            return InValue ? *InValue->GetName() : TEXT("Null TUniquePtr");
         }
         else if constexpr (bIsSoftObject)
         {
@@ -477,7 +459,7 @@ public:
         }
         else
         {
-            static_assert(!std::is_same_v<T, T>, "Cannot convert this type to string. Add support in ALS_Globals.h.");
+            static_assert(!std::is_same_v<T, T>, "Converting this type to string failed. Add conversion for this type in ALS_Globals.h");
         }
     }
 

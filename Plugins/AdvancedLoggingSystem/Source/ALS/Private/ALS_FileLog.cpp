@@ -31,7 +31,7 @@ bool UALS_FileLog::CreateMessageLog(const UObject* Context, const FString& Calle
     IPlatformFile& PlatformFile = FPlatformFileManager::Get().GetPlatformFile();
     if (PlatformFile.IsReadOnly(*LogFilePath))
     {
-        UE_LOG(LogTemp, Error, TEXT("Directory not writable: %s"), *LogFilePath);
+        UE_LOG(LogALS, Error, TEXT("Directory not writable: %s"), *LogFilePath);
         return false;
     }
 
@@ -80,7 +80,7 @@ bool UALS_FileLog::CreateSessionLog(const UWorld* World)
 {
     if (!World)
     {
-        UE_LOG(LogTemp, Error, TEXT("No Valid World Found: Can't create Session log. Provide a valid World Context"));
+        UE_LOG(LogALS, Error, TEXT("No Valid World Found: Can't create Session log. Provide a valid World Context"));
         return false;
     }
 
@@ -89,7 +89,7 @@ bool UALS_FileLog::CreateSessionLog(const UWorld* World)
     IPlatformFile& PlatformFile = FPlatformFileManager::Get().GetPlatformFile();
     if (PlatformFile.IsReadOnly(*LogFilePath))
     {
-        UE_LOG(LogTemp, Error, TEXT("Directory not writable: %s"), *LogFilePath);
+        UE_LOG(LogALS, Error, TEXT("Directory not writable: %s"), *LogFilePath);
         return false;
     }
 
@@ -114,7 +114,7 @@ bool UALS_FileLog::CreateSessionLog(const UWorld* World)
 
     if (!FileLogSuccess)
     {
-        UE_LOG(LogTemp, Error, TEXT("File to create file logging. Check if the file has write permissions"));
+        UE_LOG(LogALS, Error, TEXT("File to create file logging. Check if the file has write permissions"));
     }
 
     return FileLogSuccess;
@@ -124,7 +124,7 @@ FString UALS_FileLog::GetCurrentInstance(const UWorld* World)
 {
     if (!World)
     {
-        UE_LOG(LogTemp, Error, TEXT("No Valid World Found: GetCurrentInstance()"));
+        UE_LOG(LogALS, Error, TEXT("No Valid World Found: GetCurrentInstance()"));
         return FString::Printf(TEXT("%s_NoWorldContext"), FApp::GetProjectName());
     }
 
@@ -231,7 +231,7 @@ void UALS_FileLog::RotateOlderLogs()
 
             if (!PlatformFile.MoveFile(*NewFilePath, *FoundFilePath))
             {
-                UE_LOG(LogTemp, Warning,TEXT("Failed to rotate log file: Unable to move from %s to %s. Since the larger files are not rotated, Please manually rotate them once a while for the ALS Logs Viewer to perform well "), *FoundFilePath, *NewFilePath);
+                UE_LOG(LogALS, Warning,TEXT("Failed to rotate log file: Unable to move from %s to %s. Since the larger files are not rotated, Please manually rotate them once a while for the ALS Logs Viewer to perform well "), *FoundFilePath, *NewFilePath);
             }
         }
     }
