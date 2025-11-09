@@ -53,7 +53,8 @@ protected:
 	void MacroCustomExample();	
 	
 	UFUNCTION(BlueprintCallable, meta = (Category = "ALS_MacroExample"))
-	void MacroCustomFile();
+	void MacroFileExample();
 
-	void MacroSomeExample();
+	UFUNCTION(BlueprintCallable, meta = (Category = "ALS_MacroExample"))
+	void MacroTestingExample();
 };

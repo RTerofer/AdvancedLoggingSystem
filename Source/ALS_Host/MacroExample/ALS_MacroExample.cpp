@@ -71,20 +71,19 @@ void AALS_MacroExample::MacroPresetExample()
 
 
 
-void AALS_MacroExample::MacroCustomFile()
+void AALS_MacroExample::MacroFileExample()
 {
 	ALSFileLog("File Message From CPP", ELogSeverity::Info);
 }
 
 
-
-void AALS_MacroExample::MacroSomeExample()
+void AALS_MacroExample::MacroTestingExample()
 {
 	TArray<int32> ObjArray;
 	AActor* HitActor = this;
 	AActor* OverlappedActor = this;
 	TMap<EConsumables, int32> MyConsumableMap;
-	TWeakObjectPtr<AActor> WeakObj = HitActor;
+	TWeakObjectPtr<AActor> WeakObj = this;
 
 
 	// Print and Log Info - (Args...)
@@ -94,7 +93,7 @@ void AALS_MacroExample::MacroSomeExample()
 	PrintWarn("Consumable is added to inventory: ", EConsumables::Banana);
 
 	//Print and Log Error - (Args...)
-	PrintError("Error: WeakObjPtr is not valid", WeakObj);
+	PrintError("Error: WeakObjPtr is not valid ", WeakObj);
 
 	// Log Info - (Args...)
 	LogInfo("My Struct:", FPlayerData(), "\nMyEnum:", EConsumables::Banana);
@@ -103,7 +102,7 @@ void AALS_MacroExample::MacroSomeExample()
 	LogWarn("HitActor: ", HitActor, "\nForwardVec: ", HitActor->GetActorForwardVector());
 
 	// Log Error  - (Args...)
-	LogError((MyConsumableMap.Find(EConsumables::Apple) ? "Found" : "NotFound"));
+	LogError((MyConsumableMap.Find(EConsumables::Apple) ? TEXT("Found") : TEXT("NotFound")));
 
 	// Print To World and Log - (Location, Args...)
 	Print3D(GetActorLocation(), "PlayerName: ", OverlappedActor);

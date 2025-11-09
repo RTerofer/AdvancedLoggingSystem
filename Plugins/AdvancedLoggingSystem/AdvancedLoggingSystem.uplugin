@@ -1,7 +1,7 @@
 {
 	"FileVersion": 3,
-	"Version": 140,
-	"VersionName": "1.4",
+	"Version": 150,
+	"VersionName": "1.5",
 	"EngineVersion": "5.2.0",
 	"FriendlyName": "Advanced Logging System",
 	"Description": "Enhanced PrintString Node, C++ Debug Macros, Property Inspector, Logs Viewer, Blackboard Logging & Batch Print Manager",
