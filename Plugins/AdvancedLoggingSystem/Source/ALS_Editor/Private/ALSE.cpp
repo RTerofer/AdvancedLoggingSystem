@@ -56,6 +56,8 @@ static FText GetLogSeverityText(ELogSeverity Mode)
 
 void FALSEditorModule::StartupModule()
 {
+    if (!GIsEditor || IsRunningGame() || IsRunningCommandlet()) return;
+   
     // Node registration
     UBlueprintNodeSpawner* NodeSpawner = UBlueprintNodeSpawner::Create(UALS_Node::StaticClass());
     FBlueprintActionDatabase::Get().GetAllActions();
@@ -67,11 +69,8 @@ void FALSEditorModule::StartupModule()
 
     FALSCommands::Register();
 
-    if (GEditor)
-    {
-        GEditor->RegisterForUndo(this);
-    }
-
+    if (GEditor) GEditor->RegisterForUndo(this);
+    
     CommandsList = MakeShareable(new FUICommandList);
 
     // Command bindings
@@ -135,6 +134,8 @@ void FALSEditorModule::StartupModule()
 
 void FALSEditorModule::ShutdownModule()
 {
+    if (!GIsEditor || IsRunningGame() || IsRunningCommandlet()) return;
+
     PendingCheckedStateALS.Empty();
     PendingCheckedStateUPS.Empty();
     PendingOutputModesALS.Empty();
@@ -143,11 +144,8 @@ void FALSEditorModule::ShutdownModule()
     PrintModeRowCache.Empty();
     LogSeverityRowCache.Empty();
 
-    if (GEditor)
-    {
-        GEditor->UnregisterForUndo(this);
-    }
-
+    if (GEditor) GEditor->UnregisterForUndo(this);
+   
     UToolMenus::UnregisterOwner(this);
 }
 
