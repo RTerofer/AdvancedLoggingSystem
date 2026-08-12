@@ -148,8 +148,7 @@ FString UALS_FunctionLibrary::ProcessProperty(FFrame& Stack, TArray<EPinType>& P
 
     int32 ProcessedStack = 0;
 
-    FStringBuilderBase OutValue;
-
+    TStringBuilder<256> OutValue;
     for (int32 i = 0; i < PinTypes.Num(); i++)
     {
         switch (PinTypes[i])
@@ -562,7 +561,7 @@ DEFINE_FUNCTION(UALS_FunctionLibrary::execConvertToString)
         return;
     }
 
-    FStringBuilderBase OutValue;
+    TStringBuilder<256> OutValue;
     OutValue.Appendf(TEXT(""));
 
     UALS_Globals::ConvertToString_Property(ValueProperty, ValuePtr, OutValue);

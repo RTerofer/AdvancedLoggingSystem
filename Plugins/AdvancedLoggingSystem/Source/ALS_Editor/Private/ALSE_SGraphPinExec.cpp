@@ -150,7 +150,7 @@ TSharedRef<SWidget> UALS_SGraphPinExec::GetDefaultValueWidget()
         HorizontalBox->AddSlot()
             .FillWidth(1.0f)
             .VAlign(VAlign_Center)
-            .Padding(FMargin(1, 0, 0, 0))
+            .Padding(FMargin(1.0f, 0.0f, 0.0f, 0.0f))
             [
                 SNew(SButton)
                     .ButtonStyle(FAppStyle::Get(), "HoverHintOnly")

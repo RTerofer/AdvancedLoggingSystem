@@ -236,23 +236,23 @@ void FALSEditorModule::ShowBlueprintWindowForALS()
         .AutoHeight().Padding(5.f)
         [
             SNew(SHorizontalBox)
-                + SHorizontalBox::Slot().FillWidth(1.0f).Padding(10)
+                + SHorizontalBox::Slot().FillWidth(1.0f).Padding(10.0f)
                 [
                     SNew(STextBlock).Text(FText::FromString("BP NAME")).Font(FAppStyle::GetFontStyle("BoldFont")).Justification(ETextJustify::Left)
                 ]
-                + SHorizontalBox::Slot().FillWidth(0.55f).Padding(10)
+                + SHorizontalBox::Slot().FillWidth(0.55f).Padding(10.0f)
                 [
                     SNew(STextBlock).Text(FText::FromString("PRINT MODE")).Font(FAppStyle::GetFontStyle("BoldFont")).Justification(ETextJustify::Center)
                 ]
-                + SHorizontalBox::Slot().FillWidth(0.5f).Padding(10)
+                + SHorizontalBox::Slot().FillWidth(0.5f).Padding(10.0f)
                 [
                     SNew(STextBlock).Text(FText::FromString("LOG LEVEL")).Font(FAppStyle::GetFontStyle("BoldFont")).Justification(ETextJustify::Center)
                 ]
-                + SHorizontalBox::Slot().FillWidth(0.3f).Padding(10)
+                + SHorizontalBox::Slot().FillWidth(0.3f).Padding(10.0f)
                 [
                     SNew(STextBlock).Text(FText::FromString("ON/OFF")).Font(FAppStyle::GetFontStyle("BoldFont")).Justification(ETextJustify::Center)
                 ]
-                + SHorizontalBox::Slot().FillWidth(0.5f).Padding(10)
+                + SHorizontalBox::Slot().FillWidth(0.5f).Padding(10.0f)
                 [
                     SNew(STextBlock).Text(FText::FromString("DELETE")).Font(FAppStyle::GetFontStyle("BoldFont")).Justification(ETextJustify::Center)
                 ]
@@ -303,13 +303,13 @@ TSharedRef<SWidget> FALSEditorModule::CreateALSRow(const FAssetData& Blueprint, 
 
     TSharedRef<SWidget> RowWidget = SNew(SHorizontalBox)
         // BP NAME
-        + SHorizontalBox::Slot().FillWidth(1.0f).Padding(5, 2).HAlign(HAlign_Left)
+        + SHorizontalBox::Slot().FillWidth(1.0f).Padding(5.0f, 2.0f).HAlign(HAlign_Left)
         [
             SNew(STextBlock).Text(FText::FromName(Blueprint.AssetName))
         ]
 
         // PRINT MODE COMBOBOX
-        +SHorizontalBox::Slot().FillWidth(0.55f).Padding(10, 2)
+        +SHorizontalBox::Slot().FillWidth(0.55f).Padding(10.0f, 2.0f)
         [
             SNew(SComboBox<TSharedPtr<EPrintMode>>)
                 .OptionsSource(&PrintModePtr->ComboOptions)
@@ -348,7 +348,7 @@ TSharedRef<SWidget> FALSEditorModule::CreateALSRow(const FAssetData& Blueprint, 
 
 
         // LOG LEVEL COMBOBOX
-        + SHorizontalBox::Slot().FillWidth(0.5f).Padding(10, 2)
+        + SHorizontalBox::Slot().FillWidth(0.5f).Padding(10.0f, 2.0f)
         [
             SNew(SComboBox<TSharedPtr<ELogSeverity>>)
                 .OptionsSource(&LogSeverityPtr->ComboOptions)
@@ -386,7 +386,7 @@ TSharedRef<SWidget> FALSEditorModule::CreateALSRow(const FAssetData& Blueprint, 
         ]
 
         // IS ENABLED CHECKBOX
-        +SHorizontalBox::Slot().FillWidth(0.3f).Padding(10, 2).HAlign(HAlign_Center)
+        +SHorizontalBox::Slot().FillWidth(0.3f).Padding(10.0f, 2.0f).HAlign(HAlign_Center)
         [
             SNew(SCheckBox)
                 .IsChecked(GetBlueprintALSCheckedState(Blueprint))
@@ -399,7 +399,7 @@ TSharedRef<SWidget> FALSEditorModule::CreateALSRow(const FAssetData& Blueprint, 
         ]
 
         // DELETE BUTTON
-        + SHorizontalBox::Slot().FillWidth(0.5f).Padding(10, 2)
+        + SHorizontalBox::Slot().FillWidth(0.5f).Padding(10.0f, 2.0f)
         [
             SNew(SButton)
                 .Text(FText::FromString("Delete"))
@@ -847,7 +847,7 @@ TSharedRef<SWidget> FALSEditorModule::CreateUPSRow(const FAssetData& Blueprint, 
     TSharedRef<SWidget> RowWidget = SNew(SHorizontalBox)
 
         // BP NAME
-        + SHorizontalBox::Slot().FillWidth(1.0f).Padding(10, 2).HAlign(HAlign_Left)
+        + SHorizontalBox::Slot().FillWidth(1.0f).Padding(10.0f, 2.0f).HAlign(HAlign_Left)
         [
             SNew(STextBlock).Text(FText::FromName(Blueprint.AssetName))
         ]
@@ -866,7 +866,7 @@ TSharedRef<SWidget> FALSEditorModule::CreateUPSRow(const FAssetData& Blueprint, 
         ]
 
         // REPLACE
-        + SHorizontalBox::Slot().FillWidth(0.5f).Padding(10, 2)
+        + SHorizontalBox::Slot().FillWidth(0.5f).Padding(10.0f, 2.0f)
         [
             SNew(SButton)
                 .Text(FText::FromString("Replace"))
@@ -886,7 +886,7 @@ TSharedRef<SWidget> FALSEditorModule::CreateUPSRow(const FAssetData& Blueprint, 
         ]
 
         // DELETE
-        + SHorizontalBox::Slot().FillWidth(0.5f).Padding(10, 2)
+        + SHorizontalBox::Slot().FillWidth(0.5f).Padding(10.0f, 2.0f)
         [
             SNew(SButton)
                 .Text(FText::FromString("Delete"))

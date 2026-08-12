@@ -122,15 +122,14 @@ public:
 
     // The context color of runtime property inspector messages
     UPROPERTY(Config, EditDefaultsOnly, Category = "PROPERTY INSPECTOR", meta = (DisplayName = "Context Color"))
-    FSlateColor ContextColor = FLinearColor(1, 1, 1, 0.5);
+    FSlateColor ContextColor = FLinearColor(1.0f, 1.0f, 1.0f, 0.5f);
 
     // The property name color of runtime property inspector messages
     UPROPERTY(Config, EditDefaultsOnly, Category = "PROPERTY INSPECTOR", meta = (DisplayName = "Property Name Color"))
-    FSlateColor PropertyColor = FLinearColor(0.5, 0.4, 1, 1);
-
+    FSlateColor PropertyColor = FLinearColor(0.5f, 0.4f, 1.0f, 1.0f);
     // The message color of runtime property inspector messages
     UPROPERTY(Config, EditDefaultsOnly, Category = "PROPERTY INSPECTOR", meta = (DisplayName = "Message Color"))
-    FSlateColor MessageColor = FLinearColor(1, 1, 0, 1);
+    FSlateColor MessageColor = FLinearColor(1.0f, 1.0f, 0.0f, 1.0f);
 
     // Widget to spawn for PropertyDebugger, If you have duplicated or created your own widget, then changing this is necessary
     UPROPERTY(Config, EditDefaultsOnly, Category = "PROPERTY INSPECTOR", meta = (DisplayName = "Property Inspector Widget", AllowedClasses = "/Script/UMG.UserWidget"))

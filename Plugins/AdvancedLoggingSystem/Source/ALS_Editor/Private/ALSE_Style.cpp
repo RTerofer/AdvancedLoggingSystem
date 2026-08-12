@@ -21,8 +21,8 @@ void FALSStyle::Initialize()
         FString IconPath = IPluginManager::Get().FindPlugin("AdvancedLoggingSystem")->GetBaseDir() / "Resources";
 
         // PROPER 24x24 TOOLBAR ICON
-		StyleInstance->Set("ALS.ToolBar", new FSlateImageBrush(IconPath / "Icon48.png", FVector2D(25, 25)));
-		StyleInstance->Set("ALS.Undo", new FSlateImageBrush(IconPath / "Undo50.png", FVector2D(14, 14)));
+		StyleInstance->Set("ALS.ToolBar", new FSlateImageBrush(IconPath / "Icon48.png", FVector2D(25.0f, 25.0f)));
+		StyleInstance->Set("ALS.Undo", new FSlateImageBrush(IconPath / "Undo50.png", FVector2D(14.0f, 14.0f)));
 
         FSlateStyleRegistry::RegisterSlateStyle(*StyleInstance.Get());
     }

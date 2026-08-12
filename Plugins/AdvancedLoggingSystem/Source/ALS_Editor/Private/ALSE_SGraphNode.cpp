@@ -126,7 +126,7 @@ void UALS_SGraphNode::CreateInputSideAddButton(TSharedPtr<SVerticalBox> InputBox
 
     TSharedRef<SButton> AddPinButton = SNew(SButton)
         .Text(NSLOCTEXT("ALS", "AddPin", " + Pin"))
-        .ContentPadding(FMargin(-3, 2, -3, 0))
+        .ContentPadding(FMargin(-3.0f, 2.0f, -3.0f, 0.0f))
         .ToolTipText(FText::FromString("Add a new input pin to append a value. Maximum 15 pins allowed."))
         .OnClicked(this, &UALS_SGraphNode::OnAddPinClicked)
         .IsEnabled_Lambda([Node]() -> bool
@@ -137,7 +137,7 @@ void UALS_SGraphNode::CreateInputSideAddButton(TSharedPtr<SVerticalBox> InputBox
     TSharedRef<SButton> Toggle3DButton = SNew(SButton)
         .Text(NSLOCTEXT("ALS","3DDebug", "3D"))
         .ToolTipText(FText::FromString("Enable this to draw the debug message in world space."))
-        .ContentPadding(FMargin(-3, 2, -5, 0))
+        .ContentPadding(FMargin(-3.0f, 2.0f, -5.0f, 0.0f))
         .OnClicked(this, &UALS_SGraphNode::On3DDebugClicked)
         .ForegroundColor_Lambda([Node]() -> FSlateColor
             {
@@ -148,7 +148,7 @@ void UALS_SGraphNode::CreateInputSideAddButton(TSharedPtr<SVerticalBox> InputBox
     FirstButtonBox->AddSlot()
         .AutoWidth()
         .HAlign(HAlign_Left)
-        .Padding(2, 1)
+        .Padding(2.0f, 1.0f)
         [
             AddPinButton
         ];
@@ -156,7 +156,7 @@ void UALS_SGraphNode::CreateInputSideAddButton(TSharedPtr<SVerticalBox> InputBox
     FirstButtonBox->AddSlot()
         .AutoWidth()
         .HAlign(HAlign_Left)
-        .Padding(2, 1)
+        .Padding(2.0f, 1.0f)
         [
             Toggle3DButton
         ];
@@ -175,10 +175,10 @@ void UALS_SGraphNode::CreateInputSideAddButton(TSharedPtr<SVerticalBox> InputBox
     FirstButtonBox->AddSlot()
         .AutoWidth()
         .HAlign(HAlign_Left)
-        .Padding(2, 1)
+        .Padding(2.0f, 1.0f)
         [
             SNew(SComboBox<TSharedPtr<FPresetItem>>)
-                .ContentPadding(FMargin(1, 0, -7, 0))
+                .ContentPadding(FMargin(1.0f, 0.0f, -7.0f, 0.0f))
                 .ToolTipText(FText::FromString("Changing this will affect all the Configs to the Selected Preset Config"))
                 .OptionsSource(&PresetItems)
                 .HasDownArrow(true)
@@ -193,7 +193,7 @@ void UALS_SGraphNode::CreateInputSideAddButton(TSharedPtr<SVerticalBox> InputBox
         .AutoHeight()
         .HAlign(HAlign_Fill)
         .VAlign(VAlign_Top)
-        .Padding(10, 2, -10, 5)
+        .Padding(10.0f, 2.0f, -10.0f, 5.0f)
         [
             FirstButtonBox
         ];
@@ -210,7 +210,7 @@ void UALS_SGraphNode::CreateAdvancedViewArrow(TSharedPtr<SVerticalBox> MainBox)
         .AutoHeight()
         .HAlign(HAlign_Fill)
         .VAlign(VAlign_Top)
-        .Padding(3, 1, 3, 3)
+        .Padding(3.0f, 1.0f, 3.0f, 3.0f)
         [
             SNew(SCheckBox)
                 .Visibility_Lambda([Node]() ->EVisibility
@@ -366,7 +366,7 @@ TSharedRef<SWidget> UALS_SGraphNode::CreateTitleWidget(TSharedPtr<SNodeTitle> No
     TSharedRef<SButton> Toggle3DButton = SNew(SButton)
         .Text(NSLOCTEXT("ALS", "3DDebug", "3D"))
         .ToolTipText(NSLOCTEXT("ALS", "3DPinToolTip", "Enable this to draw the debug message in world space."))
-        .ContentPadding(FMargin(-3, 1, -5, 1))
+        .ContentPadding(FMargin(-3.0f, 1.0f, -5.0f, 1.0f))
         .OnClicked(this, &UALS_SGraphNode::On3DDebugClicked)
         .ButtonColorAndOpacity_Lambda([Node]() -> FSlateColor
             {
@@ -386,20 +386,20 @@ TSharedRef<SWidget> UALS_SGraphNode::CreateTitleWidget(TSharedPtr<SNodeTitle> No
                         .AutoWidth()
                         .VAlign(VAlign_Top)
                         .HAlign(HAlign_Left)
-                        .Padding(2, 1)
+                        .Padding(2.0f, 1.0f)
                         [
                             SNew(STextBlock)
                                 .Text(NodeTitleText)
                                 .Font(HeadingFont)
                                 .ColorAndOpacity(FColor::White)
-                                .RenderOpacity(0.9)
+                                .RenderOpacity(0.9f)
                         ]
 
                         + SHorizontalBox::Slot()
-                        .FillWidth(0.2)
+                        .FillWidth(0.2f)
                         .VAlign(VAlign_Top)
                         .HAlign(HAlign_Right)
-                        .Padding(5, 2, 0, 0)
+                        .Padding(5.0f, 2.0f, 0.0f, 0.0f)
                         [
                             SNew(SCheckBox)
                                 .OnCheckStateChanged(this, &UALS_SGraphNode::OnActiveStateChanged)
@@ -413,13 +413,13 @@ TSharedRef<SWidget> UALS_SGraphNode::CreateTitleWidget(TSharedPtr<SNodeTitle> No
 
                 + SVerticalBox::Slot()
                 .AutoHeight()
-                .Padding(2, 1)
+                .Padding(2.0f, 1.0f)
                 [
                     SNew(STextBlock)
                         .Text(SubTitleText)
                         .Font(SubHeadingFont)
                         .ColorAndOpacity(FColor::White)
-                        .RenderOpacity(0.85)
+                        .RenderOpacity(0.85f)
                 ]
         ];
 }

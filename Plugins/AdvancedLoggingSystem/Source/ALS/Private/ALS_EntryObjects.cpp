@@ -78,7 +78,7 @@ bool UALS_PropMsgObject::TickableSubscribe(float DeltaTime)
     }
 
     PropertyName = VarProperty->GetName();
-    FStringBuilderBase OutValue;
+    TStringBuilder<256> OutValue;
     OutValue.Appendf(TEXT(""));
 
     void* ValuePtr = VarProperty->ContainerPtrToValuePtr<void>(VarOwner);

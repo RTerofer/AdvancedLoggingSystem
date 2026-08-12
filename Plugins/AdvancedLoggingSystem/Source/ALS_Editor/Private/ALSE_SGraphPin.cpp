@@ -439,7 +439,7 @@ TSharedRef<SWidget> UALS_SGraphPin::GetDefaultValueWidget()
         }
 
         return SNew(SHorizontalBox)
-            + SHorizontalBox::Slot().AutoWidth().Padding(0)
+            + SHorizontalBox::Slot().AutoWidth().Padding(0.0f)
             [
                 SNew(SNumericEntryBox<float>)
                     .ToolTipText(FText::FromString("X Value/Offset of the Text Location"))
@@ -451,7 +451,7 @@ TSharedRef<SWidget> UALS_SGraphPin::GetDefaultValueWidget()
                         SNew(STextBlock).Text(FText::FromString("X"))
                     ]
             ]
-            + SHorizontalBox::Slot().AutoWidth().Padding(0)
+            + SHorizontalBox::Slot().AutoWidth().Padding(0.0f)
             [
                 SNew(SNumericEntryBox<float>)
                     .ToolTipText(FText::FromString("Y Value/Offset of the Text Location"))
@@ -463,7 +463,7 @@ TSharedRef<SWidget> UALS_SGraphPin::GetDefaultValueWidget()
                         SNew(STextBlock).Text(FText::FromString("Y"))
                     ]
             ]
-            + SHorizontalBox::Slot().AutoWidth().Padding(0)
+            + SHorizontalBox::Slot().AutoWidth().Padding(0.0f)
             [
                 SNew(SNumericEntryBox<float>)
                     .ToolTipText(FText::FromString("Z Value/Offset of the Text Location"))
@@ -535,7 +535,7 @@ TSharedRef<SWidget> UALS_SGraphPin::GetDefaultValueWidget()
 
         return SNew(SComboBox<TSharedPtr<FOutputModeItem>>)
             .ToolTipText(FText::FromString("Choose how the message is output: on screen, log or both.d"))
-            .ContentPadding(FMargin(2, 2, 2, 2))
+            .ContentPadding(FMargin(2.0f, 2.0f, 2.0f, 2.0f))
             .OptionsSource(&OutputModeItems)
             .HasDownArrow(true)
             .OnGenerateWidget(this, &UALS_SGraphPin::MakeOutputModeRow)
@@ -576,7 +576,7 @@ TSharedRef<SWidget> UALS_SGraphPin::GetDefaultValueWidget()
         return SNew(SComboBox<TSharedPtr<FLogSeverityItem>>)
             .ToolTipText(FText::FromString("Set the severity level to Info, Warning or Error."))
             .OptionsSource(&LogSeverityItems)
-            .ContentPadding(FMargin(2, 2, 2, 2))
+            .ContentPadding(FMargin(2.0f, 2.0f, 2.0f, 2.0f))
             .HasDownArrow(true)
             .OnGenerateWidget(this, &UALS_SGraphPin::MakeLogSeverityRow)
             .OnSelectionChanged(this, &UALS_SGraphPin::OnLogSeverityChosen)
@@ -599,7 +599,7 @@ TSharedRef<SWidget> UALS_SGraphPin::GetDefaultValueWidget()
         }
 
         TSharedRef<SEditableTextBox> EditableTextBox = SNew(SEditableTextBox)
-            .Padding(FMargin(5, 4, 5, 4))
+            .Padding(FMargin(5.0f, 4.0f, 5.0f, 4.0f))
             .Text(FText::FromString(SavedDefault))
             .HintText(FText::FromString("In String"))
             .ToolTipText(FText::FromString("When Key Provided, the Messages of same key will be replaced. Useful in tick messages"))
@@ -629,7 +629,7 @@ TSharedRef<SWidget> UALS_SGraphPin::GetDefaultValueWidget()
         TSharedPtr<SHorizontalBox> HorizontalBox = SNew(SHorizontalBox)
             + SHorizontalBox::Slot()
             .AutoWidth()
-            .Padding(FMargin(0, 0, 0, 0))
+            .Padding(FMargin(0.0f, 0.0f, 0.0f, 0.0f))
             [
                 EditableTextBox
             ];
@@ -639,7 +639,7 @@ TSharedRef<SWidget> UALS_SGraphPin::GetDefaultValueWidget()
             HorizontalBox->AddSlot()
                 .AutoWidth()
                 .VAlign(VAlign_Center)
-                .Padding(FMargin(3.5f, 0, 0, 0))
+                .Padding(FMargin(3.5f, 0.0f, 0.0f, 0.0f))
                 [
                     SNew(SButton)
                         .ButtonStyle(FAppStyle::Get(), "HoverHintOnly")
@@ -668,7 +668,7 @@ TSharedRef<SWidget> UALS_SGraphPin::GetDefaultValueWidget()
         }
 
         TSharedRef<SMultiLineEditableTextBox> EditableTextBox = SNew(SMultiLineEditableTextBox)
-            .Padding(FMargin(5, 4, 5, 4))
+            .Padding(FMargin(5.0f, 4.0f, 5.0f, 4.0f))
             .Text(FText::FromString(SavedDefault))
             .HintText(FText::FromString("In String"))
             .ToolTipText(FText::FromString("Given String will be printed or logged"))
@@ -698,7 +698,7 @@ TSharedRef<SWidget> UALS_SGraphPin::GetDefaultValueWidget()
         TSharedPtr<SHorizontalBox> HorizontalBox = SNew(SHorizontalBox)
             + SHorizontalBox::Slot()
             .AutoWidth()
-            .Padding(FMargin(0, 0, 0, 0))
+            .Padding(FMargin(0.0f, 0.0f, 0.0f, 0.0f))
             [
                 EditableTextBox
             ];
@@ -708,7 +708,7 @@ TSharedRef<SWidget> UALS_SGraphPin::GetDefaultValueWidget()
             HorizontalBox->AddSlot()
                 .AutoWidth()
                 .VAlign(VAlign_Center)
-                .Padding(FMargin(3.5f, 0, 0, 0))
+                .Padding(FMargin(3.5f, 0.0f, 0.0f, 0.0f))
                 [
                     SNew(SButton)
                         .ButtonStyle(FAppStyle::Get(), "HoverHintOnly")

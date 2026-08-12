@@ -491,8 +491,7 @@ void UALS_LogsUMG::GetMessageObjects(
             if (MessageObjects.Num() > UALS_Settings::Get()->MaxNumberOfListsToCreate)
             {
                 FString OutMessage = FString::Printf(
-                    TEXT("Warning: The number of logs to ungroup is large. Creating this many list entries may consume more memory.\nCaution: Would you still like to proceed with ungrouping these messages? "),
-                    MessageObjects.Num());
+                    TEXT("Warning: The number of logs to ungroup is large. Creating this many list entries may consume more memory.\nCaution: Would you still like to proceed with ungrouping these messages? "));
                 OnGetLogsCompleted.ExecuteIfBound(MessageObjects, false, OutMessage);
                 return;
             }
